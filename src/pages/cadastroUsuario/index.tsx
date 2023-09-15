@@ -1,47 +1,19 @@
-import React, { useState } from "react";
-import { Button, TextField, Grid, Container, Typography } from "@mui/material";
+import React, { useState } from 'react';
+import { Button, TextField, Grid, Container, Typography } from '@mui/material';
+import axios from 'axios'; // Importe o Axios
 
-interface Address {
-  streetName: string;
-  number: string;
-  complement: string;
-  city: string;
-  zipCode: string;
-  state: string;
-}
+export default function CadastroUsuario() {
+  const usuarioModel = {
+    name: '',
+    email: '',
+    password: '',
+    cpf: '',
+    telefone: '',
+  };
 
-interface User {
-  name: string;
-  email: string;
-  password: string;
-  cpf: string;
-  telefone: string;
-  address: Address;
-}
+  const [user, setUser] = useState(usuarioModel);
 
-const initialUser: User = {
-  name: "",
-  email: "",
-  password: "",
-  cpf: "",
-  telefone: "",
-  address: {
-    streetName: "",
-    number: "",
-    complement: "",
-    city: "",
-    zipCode: "",
-    state: "",
-  },
-};
-
-export default function cadastroUsuario() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [user, setUser] = useState<User>(initialUser);
-
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUser({
       ...user,
@@ -49,28 +21,29 @@ export default function cadastroUsuario() {
     });
   };
 
-  const handleAddressChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = event.target;
-    setUser({
-      ...user,
-      address: {
-        ...user.address,
-        [name]: value,
-      },
-    });
-  };
+  const cadastrarUsuario = async() => {
+  
+    try {
+      // Fazer a chamada HTTP para cadastrar o usuário
+      const response = await axios.post('http://localhost:8080/cadastrarusuario', user);
+      console.log('Usuário cadastrado com sucesso!', response.data);
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Aqui você pode enviar os dados do usuário para o servidor ou realizar qualquer outra ação necessária.
-    console.log("Dados do usuário:", user);
+      setUser({
+        name: '',
+        email: '',
+        password: '',
+        cpf: '',
+        telefone: '',
+      })
+
+    } catch (error) {
+      console.error('Erro ao cadastrar usuário:', error);
+    }
   };
 
   return (
     <Container maxWidth="lg">
-      <form onSubmit={handleSubmit}>
+      <form>
         <Typography variant="h4" align="center">
           Cadastro
         </Typography>
@@ -127,66 +100,6 @@ export default function cadastroUsuario() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Nome da Rua"
-              name="streetName"
-              variant="outlined"
-              value={user.address.streetName}
-              onChange={handleAddressChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Número"
-              name="number"
-              variant="outlined"
-              value={user.address.number}
-              onChange={handleAddressChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Complemento"
-              name="complement"
-              variant="outlined"
-              value={user.address.complement}
-              onChange={handleAddressChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Cidade"
-              name="city"
-              variant="outlined"
-              value={user.address.city}
-              onChange={handleAddressChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="CEP"
-              name="zipCode"
-              variant="outlined"
-              value={user.address.zipCode}
-              onChange={handleAddressChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="UF"
-              name="state"
-              variant="outlined"
-              value={user.address.state}
-              onChange={handleAddressChange}
-            />
-          </Grid>
         </Grid>
         <Button
           type="submit"
@@ -194,6 +107,7 @@ export default function cadastroUsuario() {
           color="primary"
           fullWidth
           size="large"
+          onClick={cadastrarUsuario}
         >
           Cadastrar
         </Button>
@@ -201,5 +115,3 @@ export default function cadastroUsuario() {
     </Container>
   );
 }
-
-

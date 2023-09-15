@@ -1,11 +1,11 @@
-//import cadastroCliente from './components/cadastroCliente'
+import CadastroUsuario from './pages/cadastroUsuario';
 //import Login from './pages/login'
-import CadastroProduto from './pages/cadastroProduto'
+//import CadastroProduto from './pages/cadastroProduto'
 
 function App() {
   return (
     <>
-    <CadastroProduto />
+    <CadastroUsuario />
     </>
   )
 }

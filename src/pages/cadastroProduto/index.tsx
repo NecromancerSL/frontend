@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Typography,
@@ -8,15 +8,20 @@ import {
 } from "@mui/material";
 import axios from 'axios';
 
-const CadastroProduto = () => {
-  const [produto, setProduto] = useState({
+
+export default function CadastroProduto (){
+
+  const produtoModel = {
     nome: "",
     descricao: "",
     preco: 0,
     imagem: "",
     qntEstoque: 0,
-  });
+  }
+  
 
+  const [produto, setProduto] = useState(produtoModel);
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProduto({ ...produto, [name]: value });
@@ -116,11 +121,10 @@ const CadastroProduto = () => {
           size="large"
           onClick={cadastrarProduto} // Chame a função de teste de conexão
         >
-          Testar Conexão e Cadastrar Produto
+          Cadastrar Produto
         </Button>
       </form>
     </Container>
   );
-};
+}
 
-export default CadastroProduto;
