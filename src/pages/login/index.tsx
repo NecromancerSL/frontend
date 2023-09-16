@@ -1,16 +1,5 @@
 import { useState } from "react";
-import {
-  Container,
-  Typography,
-  Grid,
-  TextField,
-  Button,
-  FormControlLabel,
-  Checkbox,
-  Link,
-  Box,
-  Avatar,
-} from "@mui/material";
+import { Avatar, Button, TextField, Grid, Container, Typography, FormControlLabel, Box, Checkbox, Link } from "@mui/material";
 import axios from "axios";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { ThemeProvider } from "@emotion/react";
@@ -18,28 +7,49 @@ import { createTheme } from "@mui/material/styles";
 
 const defaultTheme = createTheme();
 
-const Login = () => {
+export default function Login () {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
+    isAdmin: false,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCredentials({ ...credentials, [name]: value });
+    setCredentials({ ...credentials, [name]: name === "isAdmin" ? e.target.checked : value });
   };
 
-  const handleLogin = async () => {
+  const handleAdminLogin = async () => {
     try {
-      // Enviar os dados de login para o servidor
-      const response = await axios.post("http://localhost:8080/login", credentials);
-      console.log("Login bem-sucedido:", response.data);
+      // Enviar os dados de login de administrador para o servidor
+      const response = await axios.post("http://localhost:8080/loginadmin", credentials);
+      console.log("Login de administrador bem-sucedido:", response.data);
 
       // Redirecionar o usuário ou executar outras ações após o login bem-sucedido
     } catch (error) {
-      console.error("Erro no login:", error);
+      console.error("Erro no login de administrador:", error);
     }
   };
+
+  const handleUserLogin = async () => {
+    try {
+      // Enviar os dados de login de usuário comum para o servidor
+      const response = await axios.post("http://localhost:8080/loginusuario", credentials);
+      console.log("Login de usuário comum bem-sucedido:", response.data);
+
+      // Redirecionar o usuário ou executar outras ações após o login bem-sucedido
+    } catch (error) {
+      console.error("Erro no login de usuário comum:", error);
+    }
+  };
+
+  const handleLogin = async () => {
+    if (credentials.isAdmin) {
+      handleAdminLogin();
+    } else {
+      handleUserLogin();
+    }
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -86,7 +96,7 @@ const Login = () => {
               label="Remember me"
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={<Checkbox value="remember" color="primary" name="isAdmin" checked={credentials.isAdmin} onChange={handleChange}/>}
               label="Admin Login"
             />
             <Button
@@ -115,6 +125,6 @@ const Login = () => {
       </Container>
     </ThemeProvider>
   );
-};
+}
 
-export default Login;
+
