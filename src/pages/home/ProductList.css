@@ -1,0 +1,11 @@
+/* ProductList.css */
+
+/* Classe para redimensionar imagens dos produtos */
+.product-image {
+    max-width: 100%; /* Largura máxima igual à largura do contêiner */
+    max-height: 100%; /* Altura máxima igual à altura do contêiner */
+    width: auto;
+    height: auto;
+    object-fit: cover; /* Manter a proporção da imagem e preencher o contêiner */
+  }
+  
