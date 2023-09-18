@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { Avatar, Button, TextField, Grid, Container, Typography, FormControlLabel, Box, Checkbox, Link } from "@mui/material";
+import { Box, Button, Checkbox, Container, FormControlLabel, Grid, TextField, Typography } from "@mui/material"; // Importar componentes do Material UI
 import axios from "axios";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { ThemeProvider } from "@emotion/react";
-import { createTheme } from "@mui/material/styles";
+import { useNavigate, Link } from "react-router-dom";
 
-const defaultTheme = createTheme();
+export default function Login() {
+  const navigate = useNavigate();
 
-export default function Login () {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
     isAdmin: false,
   });
+
+  const [error, setError] = useState(""); 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -21,110 +21,110 @@ export default function Login () {
 
   const handleAdminLogin = async () => {
     try {
-      // Enviar os dados de login de administrador para o servidor
       const response = await axios.post("http://localhost:8080/loginadmin", credentials);
       console.log("Login de administrador bem-sucedido:", response.data);
-
-      // Redirecionar o usuário ou executar outras ações após o login bem-sucedido
+      navigate("/homeadmin");
     } catch (error) {
       console.error("Erro no login de administrador:", error);
+      setError("Email ou senha incorretos. Por favor, tente novamente.");
+      setCredentials({
+        ...credentials,
+        email: "",
+        password: "",
+        isAdmin: false,
+      });
+      
     }
   };
 
   const handleUserLogin = async () => {
     try {
-      // Enviar os dados de login de usuário comum para o servidor
       const response = await axios.post("http://localhost:8080/loginusuario", credentials);
       console.log("Login de usuário comum bem-sucedido:", response.data);
-
-      // Redirecionar o usuário ou executar outras ações após o login bem-sucedido
+      navigate("/");
     } catch (error) {
       console.error("Erro no login de usuário comum:", error);
+      setError("Email ou senha incorretos. Por favor, tente novamente.");
+      setCredentials({
+        ...credentials,
+        email: "",
+        password: "",
+        isAdmin: false,
+      });
     }
   };
 
   const handleLogin = async () => {
+    setError("");
+
     if (credentials.isAdmin) {
       handleAdminLogin();
     } else {
       handleUserLogin();
     }
-  }
+  };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box component="form" noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={handleChange}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" name="isAdmin" checked={credentials.isAdmin} onChange={handleChange}/>}
-              label="Admin Login"
-            />
-            <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={handleLogin}
-            >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
+    <Container component="main" maxWidth="xs">
+      <Box sx={styles.box}>
+        <Typography component="h1" variant="h5">
+          Login
+        </Typography>
+        <Box component="form" noValidate sx={{ mt: 1 }}>
+          <TextField
+            variant="standard"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            onChange={handleChange}
+          />
+          <TextField
+            variant="standard"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Senha"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            onChange={handleChange}
+          />
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" name="isAdmin" checked={credentials.isAdmin} onChange={handleChange} />}
+            label="Sou administrador"
+          />
+          {error && <Typography variant="body2" color="error">{error}</Typography>} {/* Exibir mensagem de erro se houver erro */}
+          <Button
+            type="button"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={handleLogin}
+          >
+            Logar
+          </Button>
+          <Grid container>
+            <Grid item>
+              <Link to="/cadastroUsuario">Não tem uma conta? Cadastre-se</Link>
             </Grid>
-          </Box>
+          </Grid>
         </Box>
-      </Container>
-    </ThemeProvider>
+      </Box>
+    </Container>
   );
 }
 
-
+const styles = {
+  box: {
+    marginTop: 8,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+};

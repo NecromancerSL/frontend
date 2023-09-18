@@ -5,7 +5,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 import './ProductList.css'; // Importe seu arquivo CSS com a classe product-image
 
-interface ProdutoInterface {
+interface IProdutoInterface {
   id: number;
   nome: string;
   descricao: string;
@@ -15,17 +15,17 @@ interface ProdutoInterface {
   qntEstoque: number;
 }
 
-function ProductList() {
-  const [products, setProducts] = useState<ProdutoInterface[]>([]);
+export default function HomeUser() {
+  const [products, setProducts] = useState<IProdutoInterface[]>([]);
   const [category, setCategory] = useState<string>('');
-  const [cart, setCart] = useState<ProdutoInterface[]>([]);
+  const [cart, setCart] = useState<IProdutoInterface[]>([]);
   const [openModal, setOpenModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<ProdutoInterface | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<IProdutoInterface | null>(null);
   const [quantityToAdd, setQuantityToAdd] = useState(1);
 
   useEffect(() => {
     axios
-      .get<ProdutoInterface[]>('http://localhost:8080/listarprodutos')
+      .get<IProdutoInterface[]>('http://localhost:8080/listarprodutos')
       .then((response) => {
         setProducts(response.data);
       })
@@ -46,7 +46,7 @@ function ProductList() {
       })
     : products;
 
-  const addToCart = (product: ProdutoInterface) => {
+  const addToCart = (product: IProdutoInterface) => {
     setSelectedProduct(product);
     setOpenModal(true);
   };
@@ -149,4 +149,4 @@ function ProductList() {
   );
 }
 
-export default ProductList;
+

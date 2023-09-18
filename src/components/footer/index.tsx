@@ -1,26 +1,20 @@
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import { Box, Typography } from "@mui/material";
 
 const footerStyle = {
-  backgroundColor: '#333',
-  color: '#fff',
-  textAlign: 'center',
-  padding: '1rem',
-  position: 'absolute',
-  bottom: '0',
-  width: '100%',
+  flexGrow: 1,
+  backgroundColor: "#222", // Cor de fundo do footer
+  color: "white", // Cor do texto
+  padding: "20px", // Espaçamento interno
+  position: "static",
+  bottom: 0,
 };
 
 export default function Footer() {
   return (
-    <Box
-      component="footer"
-      sx={footerStyle}
-    >
-      <Typography variant="body2">
+    <Box component="footer" sx={footerStyle}>
+      <Typography variant="body2" align="center">
         © {new Date().getFullYear()} Essencial - Produtos Médicos e Ortopédicos. Todos os direitos reservados.
       </Typography>
     </Box>
   );
 }
-
