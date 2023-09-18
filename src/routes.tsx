@@ -6,6 +6,7 @@ import Header from './components/header'
 import Footer from './components/footer'
 import HomeUser from './pages/home';
 import HomeAdmin from './pages/home/homeAdmin';
+import EditarProduto from './pages/editarProduto';
 
 export default function AppRouter() {
     return (
@@ -17,6 +18,7 @@ export default function AppRouter() {
                 {<Route path="/cadastroUsuario" element={<CadastroUsuario />} /> }
                 {<Route path="/cadastroProduto" element={<CadastroProduto />} /> } 
                 {<Route path="/homeadmin" element={<HomeAdmin />} />}
+                {<Route path="/editarproduto/:id" element={<EditarProduto />} /> }
             </Routes>
             <Footer />
         </Router>

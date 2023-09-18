@@ -1,90 +1,68 @@
-import  { useState } from "react";
-import {
-  Container,
-  Typography,
-  Grid,
-  TextField,
-  Button,
-} from "@mui/material";
+import { useState, useEffect } from "react";
+import { Button, Container, Grid, TextField, Typography } from "@mui/material";
 import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 
-export default function CadastroProduto() {
-  const produtoModel = {
-    id: "", // Adicione um campo de ID para o produto
+export default function EditarProduto() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [produto, setProduto] = useState({
+    id: id,
     nome: "",
     descricao: "",
     categoria: "",
     preco: 0,
     imagem: "",
     qntEstoque: 0,
-  };
-
-  const [produto, setProduto] = useState(produtoModel);
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProduto({ ...produto, [name]: value });
   };
 
-  const cadastrarProduto = async () => {
+  const editarProduto = async () => {
     try {
       // Enviar os dados do produto para o servidor
       const response = await axios.post(
-        "http://localhost:8080/criarproduto",
+        `http://localhost:8080/atualizarproduto/${produto.id}`,
         produto
       );
-      console.log("Produto cadastrado com sucesso:", response.data);
-
-      // Limpar o formulário após o cadastro bem-sucedido, se necessário
-      setProduto({
-        id: "", // Limpe o campo de ID
-        nome: "",
-        descricao: "",
-        categoria: "",
-        preco: 0,
-        imagem: "",
-        qntEstoque: 0,
-      });
+      console.log("Produto editado com sucesso:", response.data);
+      navigate("/homeadmin");
     } catch (error) {
-      console.error("Erro ao cadastrar o produto:", error);
+      console.error("Erro ao editar o produto:", error);
     }
   };
 
-  // Função para buscar os detalhes do produto com base no ID
-  const buscarDetalhesProduto = async () => {
-    try {
-      if (produto.id) {
-        // Fazer uma solicitação para obter os detalhes do produto com base no ID
+  useEffect(() => {
+    // Função para buscar os dados do produto com base no ID
+    const buscarProdutoPorID = async () => {
+      try {
         const response = await axios.get(
-          `http://localhost:8080/detalhesproduto/${produto.id}`
+          `http://localhost:8080/listarproduto/${id}`
         );
+        const produtoData = response.data;
 
-        // Definir os detalhes do produto no estado
-        setProduto(response.data);
+        // Atualiza o estado do produto com os dados recebidos da API
+        setProduto(produtoData);
+      } catch (error) {
+        console.error("Erro ao buscar o produto:", error);
       }
-    } catch (error) {
-      console.error("Erro ao buscar detalhes do produto:", error);
-    }
-  };
+    };
+
+    // Chama a função para buscar os dados do produto assim que o componente for montado
+    buscarProdutoPorID();
+  }, [id]);
 
   return (
     <Container maxWidth="lg">
       <form>
         <Typography variant="h4" component="h1" align="center">
-          Cadastro de Produto
+          Editar Produto
         </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="ID do Produto"
-              name="id"
-              variant="outlined"
-              value={produto.id}
-              onChange={handleChange}
-              onBlur={buscarDetalhesProduto} // Chame a função para buscar detalhes ao sair do campo ID
-            />
-          </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -137,11 +115,7 @@ export default function CadastroProduto() {
             />
             {produto.imagem && (
               <div>
-                <a
-                  href={produto.imagem}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={produto.imagem} target="_blank" rel="noopener noreferrer">
                   Link da Imagem
                 </a>
               </div>
@@ -164,9 +138,9 @@ export default function CadastroProduto() {
             color="primary"
             fullWidth
             size="large"
-            onClick={cadastrarProduto}
+            onClick={editarProduto}
           >
-            Cadastrar Produto
+            Editar Produto
           </Button>
         </Grid>
       </form>

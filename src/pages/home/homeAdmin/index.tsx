@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { Button, Card, CardActions, CardContent, CardMedia,  Grid, Paper, Tab, Tabs, Typography, } from "@mui/material";
+import { Button, Card, CardActions, CardContent, CardMedia, Grid, Paper, Tab, Tabs, Typography } from "@mui/material";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete"; // Importe o ícone de exclusão
+import { useNavigate } from "react-router-dom";
 
 interface ProdutoInterface {
   id: number;
@@ -14,8 +16,10 @@ interface ProdutoInterface {
 }
 
 export default function HomeAdmin() {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<ProdutoInterface[]>([]);
   const [category, setCategory] = useState<string>("");
+
   useEffect(() => {
     axios
       .get<ProdutoInterface[]>("http://localhost:8080/listarprodutos")
@@ -39,12 +43,25 @@ export default function HomeAdmin() {
       })
     : products;
 
-  
-
   const handleEditProduct = (productId: number) => {
-    // Implemente a lógica para editar um produto com base no ID
-    // Isso pode incluir a navegação para uma página de edição de produto ou um modal de edição.
-    console.log("Editar produto com o ID:", productId);
+    navigate(`/editarproduto/${productId}`);
+  };
+
+  const handleDeleteProduct = async (productId: number) => {
+    const confirmDelete = window.confirm("Tem certeza de que deseja excluir este produto?");
+
+    if (confirmDelete) {
+      try {
+        // Excluir o produto fazendo uma solicitação DELETE à sua API
+        await axios.delete(`http://localhost:8080/deletarproduto/${productId}`);
+        console.log("Produto excluído com sucesso.");
+        
+        // Atualize a lista de produtos após a exclusão bem-sucedida, removendo o produto excluído
+        setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productId));
+      } catch (error) {
+        console.error("Erro ao excluir o produto:", error);
+      }
+    }
   };
 
   return (
@@ -91,7 +108,6 @@ export default function HomeAdmin() {
                 </Typography>
               </CardContent>
               <CardActions>
-
                 <Button
                   variant="outlined"
                   color="primary"
@@ -100,6 +116,15 @@ export default function HomeAdmin() {
                   startIcon={<EditIcon />}
                 >
                   Editar Produto
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => handleDeleteProduct(product.id)}
+                  fullWidth
+                  startIcon={<DeleteIcon />} // Adicione o ícone de exclusão
+                >
+                  Excluir Produto
                 </Button>
               </CardActions>
             </Card>
