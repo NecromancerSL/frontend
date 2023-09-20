@@ -25,7 +25,7 @@ export default function CadastroUsuario() {
   
     try {
       // Fazer a chamada HTTP para cadastrar o usuário
-      const response = await axios.post('http://localhost:8080/cadastrarusuario', user);
+      const response = await axios.post('http://localhost:8080/cadastrarusuario', {user});
       console.log('Usuário cadastrado com sucesso!', response.data);
 
       setUser({

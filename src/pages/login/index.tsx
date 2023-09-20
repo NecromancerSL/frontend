@@ -111,7 +111,7 @@ export default function Login() {
           </Button>
           <Grid container>
             <Grid item>
-              <Link to="/cadastroUsuario">Não tem uma conta? Cadastre-se</Link>
+              <Link to="/cadastrousuario">Não tem uma conta? Cadastre-se</Link>
             </Grid>
           </Grid>
         </Box>

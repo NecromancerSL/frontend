@@ -3,7 +3,7 @@ import { Button, Card, CardActions, CardContent, CardMedia, Grid, Paper, Tab, Ta
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete"; // Importe o ícone de exclusão
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 interface ProdutoInterface {
   id: number;
@@ -77,6 +77,9 @@ export default function HomeAdmin() {
             label="Produtos Médicos"
             onClick={() => setCategory("Produtos Médicos")}
           />
+          <Link to="/cadastroproduto">
+            <Tab label="Cadastrar Produto" />
+          </Link>
         </Tabs>
       </Paper>
       <Typography variant="h5" component="div" mt={2}>

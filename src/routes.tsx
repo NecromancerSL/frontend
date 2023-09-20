@@ -15,8 +15,8 @@ export default function AppRouter() {
             <Routes>
                 <Route path="/" element={<HomeUser />} />
                 <Route path="/login" element={<Login />} />
-                {<Route path="/cadastroUsuario" element={<CadastroUsuario />} /> }
-                {<Route path="/cadastroProduto" element={<CadastroProduto />} /> } 
+                {<Route path="/cadastrousuario" element={<CadastroUsuario />} /> }
+                {<Route path="/cadastroproduto" element={<CadastroProduto />} /> } 
                 {<Route path="/homeadmin" element={<HomeAdmin />} />}
                 {<Route path="/editarproduto/:id" element={<EditarProduto />} /> }
             </Routes>

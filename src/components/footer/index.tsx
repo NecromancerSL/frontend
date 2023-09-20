@@ -5,7 +5,8 @@ const footerStyle = {
   backgroundColor: "#222", // Cor de fundo do footer
   color: "white", // Cor do texto
   padding: "20px", // Espaçamento interno
-  position: "static",
+  position: "absolute",
+  width: "100%",
   bottom: 0,
 };
 
