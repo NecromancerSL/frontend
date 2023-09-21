@@ -4,7 +4,7 @@ import Login from './pages/login'
 import CadastroProduto from './pages/cadastroProduto'
 import Header from './components/header'
 import Footer from './components/footer'
-import HomeUser from './pages/home';
+import HomeUser from './pages/home/homeUser';
 import HomeAdmin from './pages/home/homeAdmin';
 import EditarProduto from './pages/editarProduto';
 

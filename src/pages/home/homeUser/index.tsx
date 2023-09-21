@@ -3,8 +3,6 @@ import axios from 'axios';
 import { Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, Tab, Tabs, TextField, Typography, } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
-import './ProductList.css'; // Importe seu arquivo CSS com a classe product-image
-
 interface IProdutoInterface {
   id: number;
   nome: string;
