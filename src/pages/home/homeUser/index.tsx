@@ -1,17 +1,8 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, Tab, Tabs, TextField, Typography, } from '@mui/material';
+import { Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, Tab, Tabs, TextField, Typography } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-
-interface IProdutoInterface {
-  id: number;
-  nome: string;
-  descricao: string;
-  categoria: string;
-  preco: number;
-  imagem: string;
-  qntEstoque: number;
-}
+import { IProdutoInterface } from '../../../interfaces/IProduto';
 
 export default function HomeUser() {
   const [products, setProducts] = useState<IProdutoInterface[]>([]);
@@ -20,6 +11,8 @@ export default function HomeUser() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<IProdutoInterface | null>(null);
   const [quantityToAdd, setQuantityToAdd] = useState(1);
+  const [warningMessage, setWarningMessage] = useState<string>('');
+  
 
   useEffect(() => {
     axios
@@ -47,13 +40,22 @@ export default function HomeUser() {
   const addToCart = (product: IProdutoInterface) => {
     setSelectedProduct(product);
     setOpenModal(true);
+    setWarningMessage(''); // Limpar qualquer mensagem de aviso anterior.
   };
 
   const handleAddToCart = () => {
     if (selectedProduct) {
       const updatedProduct = { ...selectedProduct, quantidade: quantityToAdd };
-      setCart([...cart, updatedProduct]);
-      setOpenModal(false);
+      const totalQuantityInCart = cart.reduce((total, item) => total + item.qntEstoque, 0);
+
+      if (totalQuantityInCart + quantityToAdd > selectedProduct.qntEstoque) {
+        // Verificar se a quantidade no carrinho excede o estoque.
+        setWarningMessage('A quantidade selecionada excede o estoque disponível.');
+      } else {
+        setCart([...cart, updatedProduct]);
+        setOpenModal(false);
+        setWarningMessage(''); // Limpar qualquer mensagem de aviso anterior.
+      }
     }
   };
 
@@ -79,9 +81,9 @@ export default function HomeUser() {
               <CardMedia
                 component="img"
                 alt={product.nome}
-                className="product-image" // Adicione a classe product-image aqui
+                className="product-image"
                 title={product.nome}
-                src={product.imagem} // Use a propriedade src para a imagem
+                src={product.imagem}
               />
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -111,6 +113,7 @@ export default function HomeUser() {
         ))}
       </Grid>
 
+      
       {selectedProduct && (
         <Dialog open={openModal} onClose={() => setOpenModal(false)}>
           <DialogTitle>Adicionar ao Carrinho</DialogTitle>
@@ -128,6 +131,11 @@ export default function HomeUser() {
               margin="normal"
               InputProps={{ inputProps: { min: 1 } }}
             />
+            {warningMessage && (
+              <Typography variant="body2" color="error">
+                {warningMessage}
+              </Typography>
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenModal(false)} color="primary">
@@ -146,5 +154,3 @@ export default function HomeUser() {
     </div>
   );
 }
-
-

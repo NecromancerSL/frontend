@@ -22,12 +22,7 @@ export default function Login() {
   const handleAdminLogin = async () => {
     try {
       const response = await axios.post("http://localhost:8080/loginadmin", credentials);
-      console.log("Login de administrador bem-sucedido:", response.data);
-      
-      // Armazene o nome do administrador e o tipo de usuário no localStorage
-      localStorage.setItem("name", response.data.name);
-      localStorage.setItem("userType", "admin");
-      
+      console.log("Login de administrador bem-sucedido:", response.data);   
       navigate("/homeadmin");
     } catch (error) {
       console.error("Erro no login de administrador:", error);
@@ -44,12 +39,8 @@ export default function Login() {
   const handleUserLogin = async () => {
     try {
       const response = await axios.post("http://localhost:8080/loginusuario", credentials);
-      console.log("Login de usuário comum bem-sucedido:", response.data);
-      
-      // Armazene o nome do usuário comum e o tipo de usuário no localStorage
-      localStorage.setItem("name", response.data.name);
-      localStorage.setItem("userType", "user");
-  
+      const user = response.data; // Supondo que os dados do usuário incluam um campo 'name'
+      console.log("Login de usuário comum bem-sucedido:", user.name);
       navigate("/");
     } catch (error) {
       console.error("Erro no login de usuário comum:", error);
@@ -138,3 +129,5 @@ const styles = {
     alignItems: "center",
   },
 };
+
+
