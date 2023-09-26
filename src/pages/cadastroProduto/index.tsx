@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import {
-  Container,
-  Typography,
-  Grid,
-  TextField,
-  Button,
-} from "@mui/material";
+import { Button, Container, Grid, TextField, Typography } from "@mui/material";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 
 export default function CadastroProduto (){
+
+  const navigate = useNavigate();
 
   const produtoModel = {
     nome: "",
@@ -33,16 +30,7 @@ export default function CadastroProduto (){
       // Enviar os dados do produto para o servidor
       const response = await axios.post('http://localhost:8080/criarproduto', produto);
       console.log('Produto cadastrado com sucesso:', response.data);
-
-      // Limpar o formulário após o cadastro bem-sucedido, se necessário
-      setProduto({
-        nome: '',
-        descricao: '',
-        categoria: '',
-        preco: 0,
-        imagem: '',
-        qntEstoque: 0,
-      });
+      navigate('/homeadmin');
     } catch (error) {
       console.error('Erro ao cadastrar o produto:', error);
     }

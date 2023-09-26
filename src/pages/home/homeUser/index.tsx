@@ -12,7 +12,6 @@ export default function HomeUser() {
   const [selectedProduct, setSelectedProduct] = useState<IProdutoInterface | null>(null);
   const [quantityToAdd, setQuantityToAdd] = useState(1);
   const [warningMessage, setWarningMessage] = useState<string>('');
-  
 
   useEffect(() => {
     axios
@@ -113,7 +112,6 @@ export default function HomeUser() {
         ))}
       </Grid>
 
-      
       {selectedProduct && (
         <Dialog open={openModal} onClose={() => setOpenModal(false)}>
           <DialogTitle>Adicionar ao Carrinho</DialogTitle>
