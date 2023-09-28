@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Box, Button, Checkbox, Container, FormControlLabel, Grid, TextField, Typography } from "@mui/material"; // Importar componentes do Material UI
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import  {  useAuthUser } from "../../contexts/authUser"; // Importar contexto de autenticação
 
 export default function Login() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigate = useNavigate();
 
   const [credentials, setCredentials] = useState({
@@ -12,7 +14,9 @@ export default function Login() {
     isAdmin: false,
   });
 
-  const [error, setError] = useState(""); 
+  const [erroradmin, setError] = useState("");
+
+  const { login, error } = useAuthUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,7 +29,7 @@ export default function Login() {
       console.log("Login de administrador bem-sucedido:", response.data);   
       navigate("/homeadmin");
     } catch (error) {
-      console.error("Erro no login de administrador:", error);
+      console.error("Erro no login de administrador:", erroradmin);
       setError("Email ou senha incorretos. Por favor, tente novamente.");
       setCredentials({
         ...credentials,
@@ -38,19 +42,11 @@ export default function Login() {
   
   const handleUserLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/loginusuario", credentials);
-      const user = response.data; // Supondo que os dados do usuário incluam um campo 'name'
-      console.log("Login de usuário comum bem-sucedido:", user.name);
+      await login(credentials); 
       navigate("/");
     } catch (error) {
       console.error("Erro no login de usuário comum:", error);
-      setError("Email ou senha incorretos. Por favor, tente novamente.");
-      setCredentials({
-        ...credentials,
-        email: "",
-        password: "",
-        isAdmin: false,
-      });
+      // Handle login error
     }
   };
   

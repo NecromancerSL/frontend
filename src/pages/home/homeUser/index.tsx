@@ -5,6 +5,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { IProdutoInterface } from '../../../interfaces/IProduto';
 
 export default function HomeUser() {
+
   const [products, setProducts] = useState<IProdutoInterface[]>([]);
   const [category, setCategory] = useState<string>('');
   const [cart, setCart] = useState<IProdutoInterface[]>([]);
@@ -23,6 +24,11 @@ export default function HomeUser() {
         console.error('Erro ao buscar produtos:', error);
       });
   }, []);
+
+  const handleTabChange = (_event: React.ChangeEvent<object>, newValue: string) => {
+    setCategory(newValue);
+  };
+  
 
   const filteredProducts = category
     ? products.filter((product) => {
@@ -61,13 +67,10 @@ export default function HomeUser() {
   return (
     <div>
       <Paper square>
-        <Tabs centered>
-          <Tab label="Todos" onClick={() => setCategory('')} />
-          <Tab
-            label="Produtos Ortopédicos"
-            onClick={() => setCategory('Produtos Ortopédicos')}
-          />
-          <Tab label="Produtos Médicos" onClick={() => setCategory('Produtos Médicos')} />
+        <Tabs centered value={category} onChange={handleTabChange}>
+          <Tab label="Todos" value="" />
+          <Tab label="Produtos Ortopédicos" value="Produtos Ortopédicos" />
+          <Tab label="Produtos Médicos" value="Produtos Médicos" />
         </Tabs>
       </Paper>
       <Typography variant="h5" component="div" mt={2}>
