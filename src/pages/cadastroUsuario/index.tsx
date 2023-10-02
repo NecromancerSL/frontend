@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, Grid, Container, Typography } from '@mui/material';
+import { Button, TextField, Grid, Container, Typography, Box } from '@mui/material';
 import axios from 'axios'; // Importe o Axios
 
 export default function CadastroUsuario() {
@@ -43,75 +43,79 @@ export default function CadastroUsuario() {
 
   return (
     <Container maxWidth="lg">
-      <form>
-        <Typography variant="h4" align="center">
-          Cadastro
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Nome"
-              name="name"
-              variant="outlined"
-              value={user.name}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              type="email"
-              variant="outlined"
-              value={user.email}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Senha"
-              name="password"
-              type="password"
-              variant="outlined"
-              value={user.password}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="CPF"
-              name="cpf"
-              variant="outlined"
-              value={user.cpf}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Telefone"
-              name="telefone"
-              variant="outlined"
-              value={user.telefone}
-              onChange={handleChange}
-            />
-          </Grid>
-        </Grid>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          size="large"
-          onClick={cadastrarUsuario}
-        >
-          Cadastrar
-        </Button>
-      </form>
+      <Box>
+        <form>
+          <Typography variant="h4" align="center">
+            Cadastro
+          </Typography>
+          <Box sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Nome"
+                  name="name"
+                  variant="outlined"
+                  value={user.name}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  name="email"
+                  type="email"
+                  variant="outlined"
+                  value={user.email}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Senha"
+                  name="password"
+                  type="password"
+                  variant="outlined"
+                  value={user.password}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="CPF"
+                  name="cpf"
+                  variant="outlined"
+                  value={user.cpf}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Telefone"
+                  name="telefone"
+                  variant="outlined"
+                  value={user.telefone}
+                  onChange={handleChange}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            size="large"
+            onClick={cadastrarUsuario}
+          >
+            Cadastrar
+          </Button>
+        </form>
+      </Box>
     </Container>
   );
 }

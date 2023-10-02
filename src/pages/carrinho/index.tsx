@@ -1,5 +1,5 @@
 import { Typography, List, ListItem, ListItemText, Button } from '@mui/material';
-import { IProdutoInterface } from '../../interfaces/IProduto';
+import { IProdutoInterface } from '../../interfaces/Produto';
 
 interface CarrinhoPageProps {
   carrinho: IProdutoInterface[];
