@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Box, Button, Checkbox, Container, FormControlLabel, Grid, TextField, Typography } from "@mui/material"; // Importar componentes do Material UI
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import  {  useAuthUser } from "../../contexts/authUser"; // Importar contexto de autenticação
+import  {  useAuthUser } from "../../contexts/AuthUserProvider/useAuthUser"; // Importar contexto de autenticação]
+import  {  useAuthAdmin } from "../../contexts/AuthAdminProvider/useAuthAdmin"; // Importar contexto de autenticação
 
 export default function Login() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  
   const navigate = useNavigate();
 
   const [credentials, setCredentials] = useState({
@@ -14,9 +14,11 @@ export default function Login() {
     isAdmin: false,
   });
 
-  const [erroradmin, setError] = useState("");
+  const [error, setError] = useState("");
 
-  const { login, error } = useAuthUser();
+  const { loginuser, erroruser } = useAuthUser();
+
+  const { loginadmin, erroradmin } = useAuthAdmin();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,28 +27,21 @@ export default function Login() {
 
   const handleAdminLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/loginadmin", credentials);
-      console.log("Login de administrador bem-sucedido:", response.data);   
-      navigate("/homeadmin");
+      await loginadmin(credentials); 
+      navigate("/");
     } catch (error) {
-      console.error("Erro no login de administrador:", erroradmin);
-      setError("Email ou senha incorretos. Por favor, tente novamente.");
-      setCredentials({
-        ...credentials,
-        email: "",
-        password: "",
-        isAdmin: false,
-      });
+      console.error("Erro no login de administrador", erroradmin);
+
     }
   };
   
   const handleUserLogin = async () => {
     try {
-      await login(credentials); 
+      await loginuser(credentials); 
       navigate("/");
     } catch (error) {
-      console.error("Erro no login de usuário comum:", error);
-      // Handle login error
+      console.error("Erro no login de usuário comum:", erroruser);
+
     }
   };
   
@@ -96,7 +91,7 @@ export default function Login() {
             control={<Checkbox value="remember" color="primary" name="isAdmin" checked={credentials.isAdmin} onChange={handleChange} />}
             label="Sou administrador"
           />
-          {error && <Typography variant="body2" color="error">{error}</Typography>} {/* Exibir mensagem de erro se houver erro */}
+          {error && <Typography variant="body2" color="error">{error}</Typography>}
           <Button
             type="button"
             fullWidth

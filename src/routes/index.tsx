@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Footer from "../components/footer";
+/* import Footer from "../components/footer"; */
 import Header from "../components/header";
 import CadastroProduto from "../pages/cadastroProduto";
 import CadastroUsuario from "../pages/cadastroUsuario";
@@ -23,7 +23,7 @@ export default function AppRouter() {
                 <Route path="/editarproduto/:id" element={<EditarProduto />} />
                 <Route path="/perfilusuario" element={<ProfilePage />} />
             </Routes>
-            <Footer />
+            {/* <Footer /> */}
         </Router>
   );
 } 
