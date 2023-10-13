@@ -15,7 +15,7 @@ interface ProdutoInterface {
   qntEstoque: number;
 }
 
-export default function HomeAdmin() {
+export default function DashboardAdmin() {
   const navigate = useNavigate();
   const [products, setProducts] = useState<ProdutoInterface[]>([]);
   const [category, setCategory] = useState<string>("");

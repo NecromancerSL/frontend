@@ -12,25 +12,25 @@ interface AuthContextType {
 const AuthAdminContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthAdminProvider = ({ children }: { children: ReactNode }) => {
-  const [admin, setUser] = useState<AdminLogin | null>(null);
-  const [erroradmin, setError] = useState<string | null>(null);
+  const [admin, setAdmin] = useState<AdminLogin | null>(null);
+  const [erroradmin, setErrorAdmin] = useState<string | null>(null);
 
   const loginadmin = async (credentials: unknown) => {
     try {
       const response = await api.post('/loginadmin', credentials);
       const loggedInAdmin: AdminLogin = response.data;
-      console.log("Login de adminastrador bem-sucedido:", loggedInAdmin);
-      setUser(loggedInAdmin);
-      setError(null);
-    } catch (erroradmin) {
-      console.error("Erro no login de administrador:", erroradmin);
-      setError("Email ou senha incorretos. Por favor, tente novamente.");
+      console.log("Login de administrador bem-sucedido:", loggedInAdmin);
+      setAdmin(loggedInAdmin);
+      setErrorAdmin(null);
+    } catch (error) {
+      console.error("Erro no login de administrador:", error);
+      setErrorAdmin("Email ou senha de administrador incorretos. Por favor, tente novamente.");
     }
   };
 
   const logoutadmin = () => {
-    setUser(null);
-    setError(null);
+    setAdmin(null);
+    setErrorAdmin(null);
   };
 
   const authContextValue: AuthContextType = {

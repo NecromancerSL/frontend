@@ -7,54 +7,37 @@ import  {  useAuthAdmin } from "../../contexts/AuthAdminProvider/useAuthAdmin"; 
 export default function Login() {
   
   const navigate = useNavigate();
-
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
     isAdmin: false,
   });
-
-  const [error, setError] = useState("");
-
+  
   const { loginuser, erroruser } = useAuthUser();
-
   const { loginadmin, erroradmin } = useAuthAdmin();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCredentials({ ...credentials, [name]: name === "isAdmin" ? e.target.checked : value });
+    const { name, value, checked } = e.target;
+    setCredentials({ ...credentials, [name]: name === "isAdmin" ? checked : value });
   };
-
-  const handleAdminLogin = async () => {
-    try {
-      await loginadmin(credentials); 
-      navigate("/");
-    } catch (error) {
-      console.error("Erro no login de administrador", erroradmin);
-
-    }
-  };
-  
-  const handleUserLogin = async () => {
-    try {
-      await loginuser(credentials); 
-      navigate("/");
-    } catch (error) {
-      console.error("Erro no login de usuário comum:", erroruser);
-
-    }
-  };
-  
 
   const handleLogin = async () => {
-    setError("");
-
     if (credentials.isAdmin) {
-      handleAdminLogin();
+      try {
+        await loginadmin(credentials);
+        navigate("/dashboardadmin");
+      } catch (adminError) { // Renomear a variável de erro para evitar conflito
+        console.error("Erro no login de administrador:", adminError);
+      }
     } else {
-      handleUserLogin();
+      try {
+        await loginuser(credentials);
+        navigate("/dashboarduser");
+      } catch (userError) { // Renomear a variável de erro para evitar conflito
+        console.error("Erro no login de usuário comum:", userError);
+      }
     }
-  };
+  }
 
   return (
     <Container component="main" maxWidth="xs">

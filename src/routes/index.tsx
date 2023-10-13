@@ -4,8 +4,9 @@ import Header from "../components/header";
 import CadastroProduto from "../pages/cadastroProduto";
 import CadastroUsuario from "../pages/cadastroUsuario";
 import EditarProduto from "../pages/editarProduto";
-import HomeAdmin from "../pages/home/homeAdmin";
-import HomeUser from "../pages/home/homeUser";
+import Home from "../pages/home";
+import DashboardAdmin from "../pages/dashboard/dashboardAdmin";
+import DashboardUser from "../pages/dashboard/dashboardUser";
 import ProfilePage from "../pages/perfilUsuario";
 import Login from "../pages/login";
 
@@ -15,11 +16,12 @@ export default function AppRouter() {
         <Router>
             <Header />
             <Routes>
-                <Route path="/" element={<HomeUser />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/dashboarduser" element={<DashboardUser />} />
+                <Route path="/dashboardadmin" element={<DashboardAdmin />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/cadastrousuario" element={<CadastroUsuario />} />
                 <Route path="/cadastroproduto" element={<CadastroProduto />} />
-                <Route path="/homeadmin" element={<HomeAdmin />} />
                 <Route path="/editarproduto/:id" element={<EditarProduto />} />
                 <Route path="/perfilusuario" element={<ProfilePage />} />
             </Routes>

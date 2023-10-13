@@ -17,13 +17,13 @@ export const AuthUserProvider = ({ children }: { children: ReactNode }) => {
 
   const loginuser = async (credentials: unknown) => {
     try {
-      const response = await api.post('/loginusuario', credentials);
+      const response = await api.post('/loginusuario', credentials); // Certifique-se de que 'credentials' tenha a estrutura correta para a solicitação.
       const loggedInUser: UserLogin = response.data;
       console.log("Login de usuário comum bem-sucedido:", loggedInUser);
       setUser(loggedInUser);
       setError(null);
-    } catch (erroruser) {
-      console.error("Erro no login de usuário comum:", erroruser);
+    } catch (error) { // Renomeei 'erroruser' para 'error'
+      console.error("Erro no login de usuário comum:", error);
       setError("Email ou senha incorretos. Por favor, tente novamente.");
     }
   };

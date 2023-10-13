@@ -4,7 +4,7 @@ import { Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogCont
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { IProdutoInterface } from '../../../interfaces/Produto';
 
-export default function HomeUser() {
+export default function DashboardUser() {
 
   const [products, setProducts] = useState<IProdutoInterface[]>([]);
   const [category, setCategory] = useState<string>('');
