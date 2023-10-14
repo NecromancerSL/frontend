@@ -1,40 +1,19 @@
-import { Typography, List, ListItem, ListItemText, Button } from '@mui/material';
+// Cart.js
+import CartItem from './carrinhoItem';
 import { IProdutoInterface } from '../../interfaces/Produto';
 
-interface CarrinhoPageProps {
-  carrinho: IProdutoInterface[];
-  removerDoCarrinho: (produto: IProdutoInterface) => void;
+interface CartProps {
+  cart: IProdutoInterface[];
+  onRemoveFromCart: (product: IProdutoInterface) => void;
 }
 
-function CarrinhoPage({ carrinho, removerDoCarrinho }: CarrinhoPageProps) {
+export default function Cart({ cart, onRemoveFromCart }: CartProps) {
   return (
     <div>
-      <Typography variant="h5">Carrinho de Compras</Typography>
-      {carrinho.length === 0 ? (
-        <Typography variant="body1">Seu carrinho está vazio.</Typography>
-      ) : (
-        <List>
-          {carrinho.map((produto) => (
-            <ListItem key={produto.id}>
-              <ListItemText
-                primary={produto.nome}
-                secondary={`Quantidade: ${produto.qntEstoque} - R$ ${(
-                  produto.preco * produto.qntEstoque
-                ).toFixed(2)}`}
-              />
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => removerDoCarrinho(produto)}
-              >
-                Remover
-              </Button>
-            </ListItem>
-          ))}
-        </List>
-      )}
+      <h2>Carrinho de Compras</h2>
+      {cart.map((product) => (
+        <CartItem key={product.id} product={product} onRemove={() => onRemoveFromCart(product)} />
+      ))}
     </div>
   );
 }
-
-export default CarrinhoPage;

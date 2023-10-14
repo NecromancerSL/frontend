@@ -1,11 +1,25 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, Tab, Tabs, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  Paper,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+} from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { IProdutoInterface } from '../../../interfaces/Produto';
 
 export default function DashboardUser() {
-
   const [products, setProducts] = useState<IProdutoInterface[]>([]);
   const [category, setCategory] = useState<string>('');
   const [cart, setCart] = useState<IProdutoInterface[]>([]);
@@ -13,6 +27,7 @@ export default function DashboardUser() {
   const [selectedProduct, setSelectedProduct] = useState<IProdutoInterface | null>(null);
   const [quantityToAdd, setQuantityToAdd] = useState(1);
   const [warningMessage, setWarningMessage] = useState<string>('');
+  const [addSuccessMessage, setAddSuccessMessage] = useState<string>('');
 
   useEffect(() => {
     axios
@@ -28,7 +43,6 @@ export default function DashboardUser() {
   const handleTabChange = (_event: React.ChangeEvent<object>, newValue: string) => {
     setCategory(newValue);
   };
-  
 
   const filteredProducts = category
     ? products.filter((product) => {
@@ -42,27 +56,38 @@ export default function DashboardUser() {
       })
     : products;
 
-  const addToCart = (product: IProdutoInterface) => {
-    setSelectedProduct(product);
-    setOpenModal(true);
-    setWarningMessage(''); // Limpar qualquer mensagem de aviso anterior.
-  };
-
-  const handleAddToCart = () => {
-    if (selectedProduct) {
-      const updatedProduct = { ...selectedProduct, quantidade: quantityToAdd };
-      const totalQuantityInCart = cart.reduce((total, item) => total + item.qntEstoque, 0);
-
-      if (totalQuantityInCart + quantityToAdd > selectedProduct.qntEstoque) {
-        // Verificar se a quantidade no carrinho excede o estoque.
-        setWarningMessage('A quantidade selecionada excede o estoque disponível.');
-      } else {
-        setCart([...cart, updatedProduct]);
-        setOpenModal(false);
-        setWarningMessage(''); // Limpar qualquer mensagem de aviso anterior.
+    const addToCart = (product: IProdutoInterface) => {
+      console.log('Botão "Adicionar ao Carrinho" clicado para o produto:', product);
+      setSelectedProduct(product);
+      setOpenModal(true);
+      setWarningMessage('');
+    };
+    
+    const handleAddToCart = () => {
+      console.log('Função handleAddToCart chamada.');
+      if (selectedProduct) {
+        const updatedProduct = { ...selectedProduct, quantidade: quantityToAdd };
+        console.log('Produto para adicionar:', updatedProduct);
+    
+        // Verifique o estado do carrinho antes de adicionar o produto
+        console.log('Carrinho antes da adição:', cart);
+    
+        const totalQuantityInCart = cart.reduce((total, item) => total + item.qntEstoque, 0);
+    
+        if (totalQuantityInCart + quantityToAdd > selectedProduct.qntEstoque) {
+          setWarningMessage('A quantidade selecionada excede o estoque disponível.');
+        } else {
+          setCart((prevCart) => [...prevCart, updatedProduct]);
+          setOpenModal(false);
+          setWarningMessage('');
+          setAddSuccessMessage('Produto adicionado ao carrinho com sucesso.');
+          console.log('Produto adicionado ao carrinho:', updatedProduct);
+    
+          // Verifique o estado do carrinho após adicionar o produto
+          console.log('Carrinho após a adição:', cart);
+        }
       }
-    }
-  };
+    };
 
   return (
     <div>
@@ -135,6 +160,11 @@ export default function DashboardUser() {
             {warningMessage && (
               <Typography variant="body2" color="error">
                 {warningMessage}
+              </Typography>
+            )}
+            {addSuccessMessage && (
+              <Typography variant="body2" color="success">
+                {addSuccessMessage}
               </Typography>
             )}
           </DialogContent>

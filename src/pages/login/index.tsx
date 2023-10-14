@@ -15,6 +15,7 @@ export default function Login() {
   
   const { loginuser, erroruser } = useAuthUser();
   const { loginadmin, erroradmin } = useAuthAdmin();
+  const error = erroruser || erroradmin;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target;
