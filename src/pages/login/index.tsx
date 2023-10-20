@@ -1,21 +1,20 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Box, Button, Checkbox, Container, FormControlLabel, Grid, TextField, Typography } from "@mui/material"; // Importar componentes do Material UI
-import { useNavigate, Link } from "react-router-dom";
-import  {  useAuthUser } from "../../contexts/AuthUserProvider/useAuthUser"; // Importar contexto de autenticação]
-import  {  useAuthAdmin } from "../../contexts/AuthAdminProvider/useAuthAdmin"; // Importar contexto de autenticação
+import { Link } from "react-router-dom";
+//import { useUserContext} from "../../hooks/useUserContext";
+import { UserContext } from "../../context/UserContext";
 
 export default function Login() {
   
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
+  
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
     isAdmin: false,
   });
-  
-  const { loginuser, erroruser } = useAuthUser();
-  const { loginadmin, erroradmin } = useAuthAdmin();
-  const error = erroruser || erroradmin;
+
+  const { signIn } = useContext(UserContext);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target;
@@ -23,21 +22,13 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    if (credentials.isAdmin) {
-      try {
-        await loginadmin(credentials);
-        navigate("/dashboardadmin");
-      } catch (adminError) { // Renomear a variável de erro para evitar conflito
-        console.error("Erro no login de administrador:", adminError);
-      }
-    } else {
-      try {
-        await loginuser(credentials);
-        navigate("/dashboarduser");
-      } catch (userError) { // Renomear a variável de erro para evitar conflito
-        console.error("Erro no login de usuário comum:", userError);
-      }
+    const { email, password, isAdmin } = credentials;
+    if(isAdmin){
+      //loginAdmin(email, password);
+    }else{
+      await signIn(credentials);
     }
+    
   }
 
   return (
@@ -75,7 +66,7 @@ export default function Login() {
             control={<Checkbox value="remember" color="primary" name="isAdmin" checked={credentials.isAdmin} onChange={handleChange} />}
             label="Sou administrador"
           />
-          {error && <Typography variant="body2" color="error">{error}</Typography>}
+          {/* {error && <Typography variant="body2" color="error">{error}</Typography>} */}
           <Button
             type="button"
             fullWidth

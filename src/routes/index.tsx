@@ -11,6 +11,8 @@ import ProfilePage from "../pages/perfilUsuario";
 import Login from "../pages/login";
 import Cart from "../pages/carrinho"; // Certifique-se de que o caminho do import está correto
 import { IProdutoInterface } from "../interfaces/Produto";
+import { UserProvider } from "../context/UserContext";
+
 
 export default function AppRouter() {
   const [cart, setCart] = useState<IProdutoInterface[]>([]);
@@ -20,7 +22,8 @@ export default function AppRouter() {
   };
 
   return (
-    <Router>
+    <UserProvider>
+      <Router>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -31,11 +34,13 @@ export default function AppRouter() {
         <Route path="/cadastroproduto" element={<CadastroProduto />} />
         <Route path="/editarproduto/:id" element={<EditarProduto />} />
         <Route path="/perfilusuario" element={<ProfilePage />} />
-        <Route
-          path="/carrinho"
-          element={<Cart cart={cart} onRemoveFromCart={removeFromCart} />}
-        />
+          <Route
+            path="/carrinho"
+            element={<Cart cart={cart} onRemoveFromCart={removeFromCart} />}
+          />
       </Routes>
     </Router>
+    </UserProvider>
+    
   );
 }
