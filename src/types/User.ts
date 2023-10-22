@@ -10,3 +10,9 @@ export interface UserLogin {
     email: string;
     password: string;
 }
+
+export interface UserProps {
+    id: number;
+    name: string;
+    email: string;
+}

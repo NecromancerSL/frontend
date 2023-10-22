@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, TextField, Grid, Container, Typography, Box } from '@mui/material';
-import axios from 'axios'; // Importe o Axios
+import api from '../../services/api';
 
 export default function CadastroUsuario() {
   const usuarioModel = {
@@ -12,6 +12,7 @@ export default function CadastroUsuario() {
   };
 
   const [user, setUser] = useState(usuarioModel);
+  const [error, setError] = useState('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -21,25 +22,32 @@ export default function CadastroUsuario() {
     });
   };
 
-  const cadastrarUsuario = async() => {
-  
-    try {
-      // Fazer a chamada HTTP para cadastrar o usuário
-      const response = await axios.post('http://localhost:8080/cadastrarusuario', {user});
-      console.log('Usuário cadastrado com sucesso!', response.data);
+  const cadastrarUsuario = async () => {
+    setError(''); // Limpa erros anteriores
 
-      setUser({
-        name: '',
-        email: '',
-        password: '',
-        cpf: '',
-        telefone: '',
-      })
+  if (!user.name || !user.email || !user.password) {
+    setError('Preencha todos os campos obrigatórios.');
+    return;
+  }
 
-    } catch (error) {
-      console.error('Erro ao cadastrar usuário:', error);
+  // Adicione uma validação para o formato de email, se necessário
+
+  try {
+    const response = await api.post('/cadastrarusuario', { user });
+
+    if (response.status === 201) {
+      // O usuário foi criado com sucesso (status 201 Created)
+      console.log('Usuário cadastrado com sucesso:', response.data);
+      setUser(usuarioModel); // Limpa o formulário
+    } else {
+      // Tratamento de outros possíveis cenários de erro da API
+      setError('Erro ao registrar usuário. Tente novamente mais tarde.');
     }
-  };
+  } catch (error) {
+    console.error('Erro ao registrar usuário:', error);
+    setError('Erro ao registrar usuário. Tente novamente mais tarde.');
+  }
+};
 
   return (
     <Container maxWidth="lg">
@@ -48,6 +56,7 @@ export default function CadastroUsuario() {
           <Typography variant="h4" align="center">
             Cadastro
           </Typography>
+          {error && <Typography color="error">{error}</Typography>}
           <Box sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>

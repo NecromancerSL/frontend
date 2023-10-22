@@ -1,9 +1,9 @@
 import { createContext, ReactNode, useState } from "react";
 import api from "../services/api";
-import { UserLogin } from "../interfaces/User";
+import { UserProps } from "../types/User";
 
 interface UserContextData {
-  user: UserLogin | undefined;
+  user: UserProps | undefined;
   isAuthenticated: boolean;
   signIn: (credentials: SignIn) => Promise<void>;
 }
@@ -20,7 +20,7 @@ type UserProviderProps = {
 export const UserContext = createContext({} as UserContextData);
 
 export function UserProvider({ children }: UserProviderProps) {
-  const [user, setUser] = useState<UserLogin>();
+  const [user, setUser] = useState<UserProps>();
   const isAuthenticated = !!user;
 
   async function signIn({ email, password }: SignIn) {

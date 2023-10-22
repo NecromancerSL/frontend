@@ -30,7 +30,7 @@ export default function EditarProduto() {
         produto
       );
       console.log("Produto editado com sucesso:", response.data);
-      navigate("/homeadmin");
+      navigate("/dashboardadmin");
     } catch (error) {
       console.error("Erro ao editar o produto:", error);
     }

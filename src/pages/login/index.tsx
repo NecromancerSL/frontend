@@ -1,33 +1,18 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Box, Button, Checkbox, Container, FormControlLabel, Grid, TextField, Typography } from "@mui/material"; // Importar componentes do Material UI
 import { Link } from "react-router-dom";
-//import { useUserContext} from "../../hooks/useUserContext";
-import { UserContext } from "../../context/UserContext";
+import { useUserContext } from "../../hooks/useUserContext";
 
 export default function Login() {
   
-  //const navigate = useNavigate();
-  
-  const [credentials, setCredentials] = useState({
-    email: "",
-    password: "",
-    isAdmin: false,
-  });
+  const { signIn } = useUserContext();
 
-  const { signIn } = useContext(UserContext);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = e.target;
-    setCredentials({ ...credentials, [name]: name === "isAdmin" ? checked : value });
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    const { email, password, isAdmin } = credentials;
-    if(isAdmin){
-      //loginAdmin(email, password);
-    }else{
-      await signIn(credentials);
-    }
+
+      await signIn({email,password});
     
   }
 
@@ -48,7 +33,7 @@ export default function Login() {
             name="email"
             autoComplete="email"
             autoFocus
-            onChange={handleChange}
+            onChange={e => setEmail(e.target.value)}
           />
           <TextField
             variant="standard"
@@ -60,10 +45,10 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
-            onChange={handleChange}
+            onChange={e => setPassword(e.target.value)}
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" name="isAdmin" checked={credentials.isAdmin} onChange={handleChange} />}
+            control={<Checkbox value="remember" color="primary" name="isAdmin" />}
             label="Sou administrador"
           />
           {/* {error && <Typography variant="body2" color="error">{error}</Typography>} */}

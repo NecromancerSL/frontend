@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Container, Grid, TextField, Typography } from "@mui/material";
-import axios from 'axios';
+import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
 
 
@@ -28,9 +28,9 @@ export default function CadastroProduto (){
   const cadastrarProduto = async () => {
     try {
       // Enviar os dados do produto para o servidor
-      const response = await axios.post('http://localhost:8080/criarproduto', produto);
+      const response = await api.post('/criarproduto', produto);
       console.log('Produto cadastrado com sucesso:', response.data);
-      navigate('/homeadmin');
+      navigate('/dashboardadmin');
     } catch (error) {
       console.error('Erro ao cadastrar o produto:', error);
     }

@@ -1,5 +1,5 @@
 
-import { IProdutoInterface } from '../../../interfaces/Produto';
+import { IProdutoInterface } from '../../../types/Produto';
 
 interface CartItemProps {
   product: IProdutoInterface;
