@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { userLogin } from "../../actions/userActions";
-import { adminLogin } from "../../actions/adminActions";
+import { userLogin } from "../../store/actions/userActions";
+import { adminLogin } from "../../store/actions/adminActions";
 
 type Props = {
   userLogin: (email: string, password: string) => void;

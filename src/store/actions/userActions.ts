@@ -1,20 +1,25 @@
 import { Dispatch } from 'redux';
-import api from '../services/api';
+import api from '../../services/api';
+import { User } from '../../types/User';
 
-// Define tipos de ação
-type UserAction = {
-  type: 'USER_LOGIN_SUCCESS' | 'USER_LOGIN_FAILURE' | 'USER_LOGOUT';
-  payload?: unknown;
-};
+type UserAction =
+  | {
+      type: 'USER_LOGIN_SUCCESS';
+      payload: User;
+    }
+    | {
+      type: 'USER_LOGIN_FAILURE';
+      payload: string; 
+    }
+    | {
+      type: 'USER_LOGOUT';
+    };
 
-// Define uma função de ação assíncrona para o login
+
 export const userLogin = (email: string, password: string) => {
   return async (dispatch: Dispatch<UserAction>) => {
     try {
-      // Substitua isso com a chamada real à API de login
       const response = await api.post('/loginusuario', { email, password });
-
-      // Simulação de sucesso do login
       const user = response.data;
 
       dispatch({
@@ -22,8 +27,8 @@ export const userLogin = (email: string, password: string) => {
         payload: user,
       });
     } catch (error) {
-      // Simulação de falha no login
-      const errorMessage = 'Login falhou. Verifique suas credenciais.';
+
+      const errorMessage = 'Login failed. Check your credentials.';
 
       dispatch({
         type: 'USER_LOGIN_FAILURE',
@@ -33,7 +38,7 @@ export const userLogin = (email: string, password: string) => {
   };
 };
 
-// Função de ação para logout
+
 export const logoutUser = () => {
   return (dispatch: Dispatch<UserAction>) => {
     dispatch({

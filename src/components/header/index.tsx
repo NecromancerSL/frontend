@@ -9,31 +9,33 @@ import {
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
+// Defina uma interface para o tipo de usuário
+interface User {
+  name: string;
+  // Outras propriedades do usuário, se houver
+}
 
-function Header() {
+interface HeaderProps {
+  user: User | null; // Declare o tipo de user como User ou null
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+function Header({ user }: HeaderProps) {
   const linkStyle = {
     color: 'white',
     textDecoration: 'none',
   };
-
-  /* const [isCartModalOpen, setCartModalOpen] = useState(false);
-  const { cart } = useCart();
-
-  const handleOpenCartModal = () => {
-    setCartModalOpen(true);
-  };
-
-  const handleCloseCartModal = () => {
-    setCartModalOpen(false);
-  }; */
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Typography variant="h6" component="div">
-            Essencial - Produtos Médicos e Ortopédicos
+            {/* <Link to="/"> */}
+              Essencial - Produtos Médicos e Ortopédicos
+            {/* </Link> */}
           </Typography>
           <div>
             <Link to="/login" style={linkStyle}>
@@ -45,28 +47,21 @@ function Header() {
                 <ShoppingCartIcon />
               </Badge>
             </Button>
+            {user && user.name && (
+              <Typography variant="subtitle1" color="inherit">
+                Bem-vindo, {user.name}!
+              </Typography>
+            )}
           </div>
         </Toolbar>
       </AppBar>
-
-      {/* <Dialog open={isCartModalOpen} onClose={handleCloseCartModal}>
-        <DialogTitle>Seu Carrinho de Compras</DialogTitle>
-        <DialogContent>
-          {cart.length === 0 ? (
-            <Typography>Seu carrinho está vazio.</Typography>
-          ) : (
-            <ul>
-              {cart.map((product) => (
-                <li key={product.id}>
-                  {product.nome} - Quantidade: {product.qntEstoque}
-                </li>
-              ))}
-            </ul>
-          )}
-        </DialogContent>
-      </Dialog> */}
     </Box>
   );
 }
 
-export default Header;
+const mapStateToProps = (state: { user: User | null }) => ({
+  user: state.user,
+});
+
+// eslint-disable-next-line react-refresh/only-export-components
+export default connect(mapStateToProps)(Header);

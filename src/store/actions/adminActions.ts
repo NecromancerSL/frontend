@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import api from '../services/api';
+import api from '../../services/api';
 
 // Importe a função da API para login de administrador, se necessário
 // import { adminLogin } from './suaApi';

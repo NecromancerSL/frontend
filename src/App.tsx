@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import userReducer from './reducers/userReducer';
-import adminReducer from './reducers/adminReducer';
+import userReducer from './store/reducers/userReducer';
+import adminReducer from './store/reducers/adminReducer';
 import thunk from 'redux-thunk'; // Middleware para chamadas assíncronas
 
 const rootReducer = combineReducers({
