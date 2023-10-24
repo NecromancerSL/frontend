@@ -1,18 +1,15 @@
-import { useState } from 'react';
+
 import {
   AppBar,
   Badge,
   Box,
   Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   Toolbar,
   Typography,
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Link } from 'react-router-dom';
-import { useCart } from '../../hooks/useCartContext';
+
 
 function Header() {
   const linkStyle = {
@@ -20,7 +17,7 @@ function Header() {
     textDecoration: 'none',
   };
 
-  const [isCartModalOpen, setCartModalOpen] = useState(false);
+  /* const [isCartModalOpen, setCartModalOpen] = useState(false);
   const { cart } = useCart();
 
   const handleOpenCartModal = () => {
@@ -29,7 +26,7 @@ function Header() {
 
   const handleCloseCartModal = () => {
     setCartModalOpen(false);
-  };
+  }; */
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -42,7 +39,7 @@ function Header() {
             <Link to="/login" style={linkStyle}>
               <Button color="inherit">Login</Button>
             </Link>
-            <Button color="inherit" onClick={handleOpenCartModal}>
+            <Button color="inherit">
               Carrinho
               <Badge color="secondary">
                 <ShoppingCartIcon />
@@ -52,7 +49,7 @@ function Header() {
         </Toolbar>
       </AppBar>
 
-      <Dialog open={isCartModalOpen} onClose={handleCloseCartModal}>
+      {/* <Dialog open={isCartModalOpen} onClose={handleCloseCartModal}>
         <DialogTitle>Seu Carrinho de Compras</DialogTitle>
         <DialogContent>
           {cart.length === 0 ? (
@@ -67,7 +64,7 @@ function Header() {
             </ul>
           )}
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </Box>
   );
 }

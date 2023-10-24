@@ -6,6 +6,7 @@ import { IProdutoInterface } from '../../../types/Produto';
 
 
 export default function DashboardUser() {
+  
   const [products, setProducts] = useState<IProdutoInterface[]>([]);
   const [category, setCategory] = useState<string>('');
   const [cart, setCart] = useState<IProdutoInterface[]>([]);
@@ -37,6 +38,8 @@ export default function DashboardUser() {
   };
 
   const handleAddToCart = () => {
+
+    console.log('Produto selecionado:', selectedProduct);
     if (selectedProduct) {
       const updatedProduct = { ...selectedProduct, quantidade: quantityToAdd };
 

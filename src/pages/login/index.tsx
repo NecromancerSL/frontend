@@ -1,20 +1,52 @@
 import { useState } from "react";
-import { Box, Button, Checkbox, Container, FormControlLabel, Grid, TextField, Typography } from "@mui/material"; // Importar componentes do Material UI
+import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  FormControlLabel,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Link } from "react-router-dom";
-import { useUserContext } from "../../hooks/useUserContext";
+import { connect } from "react-redux";
+import { userLogin } from "../../actions/userActions";
+import { adminLogin } from "../../actions/adminActions";
 
-export default function Login() {
-  
-  const { signIn } = useUserContext();
+type Props = {
+  userLogin: (email: string, password: string) => void;
+  adminLogin: (email: string, password: string) => void;
+};
 
+// eslint-disable-next-line react-refresh/only-export-components
+function Login({ userLogin, adminLogin }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const handleLogin = async () => {
+  const navigate = useNavigate();
 
-      await signIn({email,password});
-    
-  }
+  const handleLogin = () => {
+    if (isAdmin) {
+      try{
+        adminLogin(email, password);
+        console.log("Login Funcionou");
+        navigate("/dashboardadmin");
+      }catch(error){
+        console.log("Login não funcionou");
+      }
+    } else {
+      try{
+        userLogin(email, password);
+        console.log("Login Funcionou");
+        navigate("/dashboarduser");
+      }catch(error){
+        console.log("Login não funcionou");
+      }
+    }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -33,7 +65,7 @@ export default function Login() {
             name="email"
             autoComplete="email"
             autoFocus
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             variant="standard"
@@ -45,13 +77,18 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" name="isAdmin" />}
+            control={
+              <Checkbox
+                checked={isAdmin}
+                color="primary"
+                onChange={() => setIsAdmin(!isAdmin)}
+              />
+            }
             label="Sou administrador"
           />
-          {/* {error && <Typography variant="body2" color="error">{error}</Typography>} */}
           <Button
             type="button"
             fullWidth
@@ -81,4 +118,5 @@ const styles = {
   },
 };
 
-
+// eslint-disable-next-line react-refresh/only-export-components
+export default connect(null, { userLogin, adminLogin })(Login);
