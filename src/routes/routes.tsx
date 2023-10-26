@@ -7,6 +7,7 @@ import AdminDashboard from '../pages/dashboard/admin';
 import UserRegister from '../pages/register/user';
 import UserProfile from '../pages/profile';
 import EditUserProfile from '../pages/update/user'; 
+import ProductRegister from '../pages/register/product';
 
 export default function AppRoutes() {
   return (
@@ -20,6 +21,7 @@ export default function AppRoutes() {
         <Route path="/dashboard/user" element={<UserDashboard />} />
         <Route path="/profile/:id" element={<UserProfile />} />
         <Route path="/profile/:id/edit" element={<EditUserProfile />} /> 
+        <Route path='/register/product' element={<ProductRegister />} />
         </Routes>
     </Router>
   );

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { AppBar, Toolbar, Typography, Button, Modal, Card, CardContent, IconButton, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -10,6 +11,8 @@ const getUserNameFromCookie = () => {
 }
 
 export default function Header() {
+
+  const navigate = useNavigate();
   const [userName, setUserName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -24,6 +27,7 @@ export default function Header() {
     Cookies.remove('userName');
     setUserName('');
     setIsModalOpen(false);
+    navigate('/')
   }
 
   return (
