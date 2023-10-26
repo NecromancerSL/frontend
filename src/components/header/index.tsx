@@ -1,72 +1,69 @@
-
-import {
-  AppBar,
-  Badge,
-  Box,
-  Button,
-  Toolbar,
-  Typography,
-} from '@mui/material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
+import { AppBar, Toolbar, Typography, Button, Modal, Card, CardContent, IconButton, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
-
-function Header() {
-  const linkStyle = {
-    color: 'white',
-    textDecoration: 'none',
-  };
-
-  /* const [isCartModalOpen, setCartModalOpen] = useState(false);
-  const { cart } = useCart();
-
-  const handleOpenCartModal = () => {
-    setCartModalOpen(true);
-  };
-
-  const handleCloseCartModal = () => {
-    setCartModalOpen(false);
-  }; */
-
-  return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Typography variant="h6" component="div">
-            Essencial - Produtos Médicos e Ortopédicos
-          </Typography>
-          <div>
-            <Link to="/login" style={linkStyle}>
-              <Button color="inherit">Login</Button>
-            </Link>
-            <Button color="inherit">
-              Carrinho
-              <Badge color="secondary">
-                <ShoppingCartIcon />
-              </Badge>
-            </Button>
-          </div>
-        </Toolbar>
-      </AppBar>
-
-      {/* <Dialog open={isCartModalOpen} onClose={handleCloseCartModal}>
-        <DialogTitle>Seu Carrinho de Compras</DialogTitle>
-        <DialogContent>
-          {cart.length === 0 ? (
-            <Typography>Seu carrinho está vazio.</Typography>
-          ) : (
-            <ul>
-              {cart.map((product) => (
-                <li key={product.id}>
-                  {product.nome} - Quantidade: {product.qntEstoque}
-                </li>
-              ))}
-            </ul>
-          )}
-        </DialogContent>
-      </Dialog> */}
-    </Box>
-  );
+// Função para obter o nome do usuário do cookie
+const getUserNameFromCookie = () => {
+  return Cookies.get('userName');
 }
 
-export default Header;
+export default function Header() {
+  const [userName, setUserName] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const userNameFromCookie = getUserNameFromCookie();
+    if (userNameFromCookie) {
+      setUserName(userNameFromCookie);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    Cookies.remove('userName');
+    setUserName('');
+    setIsModalOpen(false);
+  }
+
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6" style={{ flex: 1 }}>
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            Essencial - Produtos Ortopédicos
+          </Link>
+        </Typography>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {userName ? (
+            <div>
+              <Button onClick={() => setIsModalOpen(true)} style={{ textDecoration: 'none', color: 'inherit' }}>
+                Olá, {userName}
+              </Button>
+              <IconButton>
+                <ShoppingCartIcon />
+              </IconButton>
+            </div>
+          ) : (
+            <Link to="/login" style={{ textDecoration: 'none', color: 'inherit' }}>
+              Login
+            </Link>
+          )}
+        </div>
+      </Toolbar>
+      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Olá, {userName}</Typography>
+              <Button variant="contained" onClick={handleLogout}>Logout</Button>
+              <Link to={`/profile/${Cookies.get('userId')}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Button variant="contained">Acessar Perfil</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </Box>
+      </Modal>
+    </AppBar>
+  );
+}

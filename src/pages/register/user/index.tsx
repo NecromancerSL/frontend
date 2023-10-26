@@ -1,58 +1,48 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Grid, Container, Typography, Box } from '@mui/material';
-import api from '../../services/api';
+import api from '../../../services/api';
 
-export default function CadastroUsuario() {
-  const usuarioModel = {
-    name: '',
-    email: '',
-    password: '',
-    cpf: '',
-    telefone: '',
-  };
-
-  const [user, setUser] = useState(usuarioModel);
+export default function UserRegister() {
   const [error, setError] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const navigate = useNavigate();
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setUser({
-      ...user,
-      [name]: value,
-    });
-  };
+  const cadastrarUsuario = async (event: React.ChangeEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Impede o comportamento padrão de envio do formulário
 
-  const cadastrarUsuario = async () => {
     setError(''); // Limpa erros anteriores
 
-  if (!user.name || !user.email || !user.password) {
-    setError('Preencha todos os campos obrigatórios.');
-    return;
-  }
-
-  // Adicione uma validação para o formato de email, se necessário
-
-  try {
-    const response = await api.post('/cadastrarusuario', { user });
-
-    if (response.status === 201) {
-      // O usuário foi criado com sucesso (status 201 Created)
-      console.log('Usuário cadastrado com sucesso:', response.data);
-      setUser(usuarioModel); // Limpa o formulário
-    } else {
-      // Tratamento de outros possíveis cenários de erro da API
-      setError('Erro ao registrar usuário. Tente novamente mais tarde.');
+    if (!name || !email || !password) {
+      setError('Preencha todos os campos obrigatórios.');
+      return;
     }
-  } catch (error) {
-    console.error('Erro ao registrar usuário:', error);
-    setError('Erro ao registrar usuário. Tente novamente mais tarde.');
-  }
-};
+
+    // Adicione uma validação para o formato de email, se necessário
+
+    try {
+      const response = await api.post('/cadastrarusuario', { name, email, password, cpf, telefone });
+      console.log(response);
+      navigate('/login');
+    } catch (error) {
+      console.error('Erro ao registrar usuário:', error);
+      setError('Erro ao registrar usuário. Tente novamente mais tarde.');
+      setName('');
+      setEmail('');
+      setPassword('');
+      setCpf('');
+      setTelefone('');
+    }
+  };
 
   return (
     <Container maxWidth="lg">
       <Box>
-        <form>
+        <form onSubmit={cadastrarUsuario}>
           <Typography variant="h4" align="center">
             Cadastro
           </Typography>
@@ -65,8 +55,8 @@ export default function CadastroUsuario() {
                   label="Nome"
                   name="name"
                   variant="outlined"
-                  value={user.name}
-                  onChange={handleChange}
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -74,10 +64,9 @@ export default function CadastroUsuario() {
                   fullWidth
                   label="Email"
                   name="email"
-                  type="email"
                   variant="outlined"
-                  value={user.email}
-                  onChange={handleChange}
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -87,8 +76,8 @@ export default function CadastroUsuario() {
                   name="password"
                   type="password"
                   variant="outlined"
-                  value={user.password}
-                  onChange={handleChange}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -97,8 +86,8 @@ export default function CadastroUsuario() {
                   label="CPF"
                   name="cpf"
                   variant="outlined"
-                  value={user.cpf}
-                  onChange={handleChange}
+                  value={cpf}
+                  onChange={(event) => setCpf(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -107,19 +96,18 @@ export default function CadastroUsuario() {
                   label="Telefone"
                   name="telefone"
                   variant="outlined"
-                  value={user.telefone}
-                  onChange={handleChange}
+                  value={telefone}
+                  onChange={(event) => setTelefone(event.target.value)}
                 />
               </Grid>
             </Grid>
           </Box>
           <Button
-            type="submit"
             variant="contained"
             color="primary"
             fullWidth
             size="large"
-            onClick={cadastrarUsuario}
+            type="submit" // Este é o botão de envio do formulário
           >
             Cadastrar
           </Button>

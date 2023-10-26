@@ -1,53 +1,43 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Container,
-  FormControlLabel,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-import { userLogin } from "../../actions/userActions";
-import { adminLogin } from "../../actions/adminActions";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useState } from 'react';
+import api from '../../services/api';
+import { Box, Button, Checkbox, Container, FormControlLabel, Grid, TextField, Typography } from '@mui/material';
+import { useNavigate, Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
-type Props = {
-  userLogin: (email: string, password: string) => void;
-  adminLogin: (email: string, password: string) => void;
-};
-
-// eslint-disable-next-line react-refresh/only-export-components
-function Login({ userLogin, adminLogin }: Props) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+export default function Login() {
 
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const handleLogin = () => {
-    if (isAdmin) {
-      try{
-        adminLogin(email, password);
-        console.log("Login Funcionou");
-        navigate("/dashboardadmin");
-      }catch(error){
-        console.log("Login não funcionou");
-      }
-    } else {
-      try{
-        userLogin(email, password);
-        console.log("Login Funcionou");
-        navigate("/dashboarduser");
-      }catch(error){
-        console.log("Login não funcionou");
-      }
+  const handleLogin = async () => {
+    try {
+      const response = isAdmin
+        ? await api.post('/loginadmin', { email, password })
+        : await api.post('/loginusuario', { email, password });
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { token, id, name } = response.data;
+
+      // Armazene o token nos cookies
+      Cookies.set('token', token, { expires: 7 });
+      Cookies.set('userName', name, { expires: 7 });
+      Cookies.set('userId', id, { expires: 7 });
+
+      console.log('Token:', token);
+      console.log('ID:', id);
+      console.log('Name:', name);
+
+  
+      navigate(isAdmin ? '/dashboard/admin' : '/dashboard/user');
+    } catch (error) {
+      console.error('Erro no login:', error);
+      setEmail('');
+      setPassword('');
     }
-  };
-
+  }
   return (
     <Container component="main" maxWidth="xs">
       <Box sx={styles.box}>
@@ -100,7 +90,7 @@ function Login({ userLogin, adminLogin }: Props) {
           </Button>
           <Grid container>
             <Grid item>
-              <Link to="/cadastrousuario">Não tem uma conta? Cadastre-se</Link>
+              <Link to="/register/user">Não tem uma conta? Cadastre-se</Link>
             </Grid>
           </Grid>
         </Box>
@@ -112,11 +102,8 @@ function Login({ userLogin, adminLogin }: Props) {
 const styles = {
   box: {
     marginTop: 8,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
 };
-
-// eslint-disable-next-line react-refresh/only-export-components
-export default connect(null, { userLogin, adminLogin })(Login);

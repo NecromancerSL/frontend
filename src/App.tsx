@@ -1,25 +1,10 @@
-import { Provider } from 'react-redux';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import userReducer from './reducers/userReducer';
-import adminReducer from './reducers/adminReducer';
-import thunk from 'redux-thunk'; // Middleware para chamadas assíncronas
+import Routes from './routes/routes';
 
-const rootReducer = combineReducers({
-  user: userReducer,
-  admin: adminReducer,
-});
-
-const store = createStore(rootReducer, applyMiddleware(thunk));
-
-
-import Routes from './routes'; // Importe suas rotas
-
-function App() {
+export default function App() {
   return (
-    <Provider store={store}>
+    <>
       <Routes />
-    </Provider>
-  );
+    </>
+  )
 }
 
-export default App;
