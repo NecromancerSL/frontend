@@ -1,33 +1,31 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { AppBar, Toolbar, Typography, Button, Modal, Card, CardContent, IconButton, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-
-// Função para obter o nome do usuário do cookie
-const getUserNameFromCookie = () => {
-  return Cookies.get('userName');
-}
+import { useCookies } from 'react-cookie';
 
 export default function Header() {
-
   const navigate = useNavigate();
-  const [userName, setUserName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cookies, , removeCookie] = useCookies(['userName', 'userId']);
+  const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    const userNameFromCookie = getUserNameFromCookie();
-    if (userNameFromCookie) {
-      setUserName(userNameFromCookie);
-    }
-  }, []);
+    const userNameFromCookie = cookies.userName;
+    setUserName(userNameFromCookie || '');
+  }, [cookies.userName]);
 
   const handleLogout = () => {
-    Cookies.remove('userName');
+    removeCookie('userName');
+    removeCookie('userId');
     setUserName('');
     setIsModalOpen(false);
-    navigate('/')
+    navigate('/');
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   }
 
   return (
@@ -55,15 +53,17 @@ export default function Header() {
           )}
         </div>
       </Toolbar>
-      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
           <Card>
             <CardContent>
               <Typography variant="h6">Olá, {userName}</Typography>
               <Button variant="contained" onClick={handleLogout}>Logout</Button>
-              <Link to={`/profile/${Cookies.get('userId')}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <Button variant="contained">Acessar Perfil</Button>
-              </Link>
+              <Box sx={{ marginTop: '10px' }}> {/* Adiciona margem entre os botões */}
+                <Link to={`/profile/${cookies.userId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Button variant="contained" onClick={handleCloseModal}>Acessar Perfil</Button>
+                </Link>
+              </Box>
             </CardContent>
           </Card>
         </Box>
@@ -71,4 +71,3 @@ export default function Header() {
     </AppBar>
   );
 }
-

@@ -13,16 +13,13 @@ export default function UserRegister() {
   const navigate = useNavigate();
 
   const cadastrarUsuario = async (event: React.ChangeEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Impede o comportamento padrão de envio do formulário
-
-    setError(''); // Limpa erros anteriores
+    event.preventDefault();
+    setError('');
 
     if (!name || !email || !password) {
       setError('Preencha todos os campos obrigatórios.');
       return;
     }
-
-    // Adicione uma validação para o formato de email, se necessário
 
     try {
       const response = await api.post('/cadastrarusuario', { name, email, password, cpf, telefone });
@@ -100,17 +97,19 @@ export default function UserRegister() {
                   onChange={(event) => setTelefone(event.target.value)}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  size="large"
+                  type="submit"
+                >
+                  Cadastrar
+                </Button>
+              </Grid>
             </Grid>
           </Box>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            size="large"
-            type="submit" // Este é o botão de envio do formulário
-          >
-            Cadastrar
-          </Button>
         </form>
       </Box>
     </Container>

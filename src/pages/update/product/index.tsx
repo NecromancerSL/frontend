@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Container, Grid, TextField, Typography } from "@mui/material";
 import api from "../../../services/api";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
-export default function ProductRegister() {
+export default function EditProduct() {
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  const produtoModel = {
+  const [produto, setProduto] = useState({
+    id: id,
     nome: "",
     descricao: "",
     categoria: "",
@@ -14,30 +16,53 @@ export default function ProductRegister() {
     preco: 0,
     imagem: "",
     qntEstoque: 0,
-  };
-
-  const [produto, setProduto] = useState(produtoModel);
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProduto({ ...produto, [name]: value });
   };
+  
 
-  const cadastrarProduto = async () => {
+  const editarProduto = async () => {
     try {
-      const response = await api.post('/criarproduto', produto);
-      console.log('Produto cadastrado com sucesso:', response.data);
-      navigate('/dashboard/admin');
+      // Enviar os dados do produto para o servidor
+      const response = await api.post(
+        `http://localhost:8080/atualizarproduto/${produto.id}`,
+        produto
+      );
+      console.log("Produto editado com sucesso:", response.data);
+      navigate("/dashboard/admin");
     } catch (error) {
-      console.error('Erro ao cadastrar o produto:', error);
+      console.error("Erro ao editar o produto:", error);
     }
   };
+
+  useEffect(() => {
+    // Função para buscar os dados do produto com base no ID
+    const buscarProdutoPorID = async () => {
+      try {
+        const response = await api.get(
+          `http://localhost:8080/listarproduto/${id}`
+        );
+        const produtoData = response.data;
+
+        // Atualiza o estado do produto com os dados recebidos da API
+        setProduto(produtoData);
+      } catch (error) {
+        console.error("Erro ao buscar o produto:", error);
+      }
+    };
+
+    // Chama a função para buscar os dados do produto assim que o componente for montado
+    buscarProdutoPorID();
+  }, [id]);
 
   return (
     <Container maxWidth="lg">
       <form>
         <Typography variant="h4" component="h1" align="center">
-          Cadastro de Produto
+          Editar Produto
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -100,14 +125,14 @@ export default function ProductRegister() {
               value={produto.imagem}
               onChange={handleChange}
             />
+            {produto.imagem && (
+              <div>
+                <a href={produto.imagem} target="_blank" rel="noopener noreferrer">
+                  Link da Imagem
+                </a>
+              </div>
+            )}
           </Grid>
-          {produto.imagem && (
-            <Grid item xs={12}>
-              <a href={produto.imagem} target="_blank" rel="noopener noreferrer">
-                Link da Imagem
-              </a>
-            </Grid>
-          )}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -119,18 +144,16 @@ export default function ProductRegister() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              fullWidth
-              size="large"
-              onClick={cadastrarProduto}
-            >
-              Cadastrar Produto
-            </Button>
-          </Grid>
+          <Button
+            type="button"
+            variant="contained"
+            color="primary"
+            fullWidth
+            size="large"
+            onClick={editarProduto}
+          >
+            Editar Produto
+          </Button>
         </Grid>
       </form>
     </Container>
