@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Modal, Card, CardContent, IconButton, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useCookies } from 'react-cookie';
 
 export default function Header() {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // Defina o tipo corretamente aqui
   const [cookies, , removeCookie] = useCookies(['userName', 'userId']);
   const [userName, setUserName] = useState('');
 
@@ -16,16 +16,20 @@ export default function Header() {
     setUserName(userNameFromCookie || '');
   }, [cookies.userName]);
 
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  }
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  }
+
   const handleLogout = () => {
     removeCookie('userName');
     removeCookie('userId');
     setUserName('');
-    setIsModalOpen(false);
+    handleCloseMenu();
     navigate('/');
-  }
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
   }
 
   return (
@@ -39,7 +43,7 @@ export default function Header() {
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {userName ? (
             <div>
-              <Button onClick={() => setIsModalOpen(true)} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Button onClick={handleOpenMenu} style={{ textDecoration: 'none', color: 'inherit' }}>
                 Olá, {userName}
               </Button>
               <IconButton>
@@ -52,22 +56,19 @@ export default function Header() {
             </Link>
           )}
         </div>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleCloseMenu}
+        >
+          <MenuItem>
+            <Link to={`/profile/${cookies.userId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              Acessar Perfil
+            </Link>
+          </MenuItem>
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        </Menu>
       </Toolbar>
-      <Modal open={isModalOpen} onClose={handleCloseModal}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Olá, {userName}</Typography>
-              <Button variant="contained" onClick={handleLogout}>Logout</Button>
-              <Box sx={{ marginTop: '10px' }}> {/* Adiciona margem entre os botões */}
-                <Link to={`/profile/${cookies.userId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <Button variant="contained" onClick={handleCloseModal}>Acessar Perfil</Button>
-                </Link>
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
-      </Modal>
     </AppBar>
   );
 }
