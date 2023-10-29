@@ -40,6 +40,7 @@ export default function UserRegister() {
     <Container maxWidth="lg">
       <Box>
         <form onSubmit={cadastrarUsuario}>
+          <br />
           <Typography variant="h4" align="center">
             Cadastro
           </Typography>

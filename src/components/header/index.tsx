@@ -47,7 +47,9 @@ export default function Header() {
                 Olá, {userName}
               </Button>
               <IconButton>
+                <Link to='/cart' style={{ textDecoration: 'none', color: 'inherit' }}>
                 <ShoppingCartIcon />
+                </Link>
               </IconButton>
             </div>
           ) : (

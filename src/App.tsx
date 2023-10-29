@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
+import { Provider } from 'react-redux'; // Import Provider
+import { store } from './redux/store/store'; // Import your Redux store
 import Routes from './routes/routes';
 
 export default function App() {
@@ -7,25 +9,25 @@ export default function App() {
   const [, , removeCookie] = useCookies(['userName', 'userId']);
 
   useEffect(() => {
-    // Função para remover todos os cookies
+    // Function to remove all cookies
     const removeAllCookies = () => {
       removeCookie('userName');
       removeCookie('userId');
-      // Adicione aqui a remoção de outros cookies, se necessário
+      // Add other cookie removals here if necessary
     };
 
-    // Adicione um ouvinte de evento antes que a página seja fechada
+    // Add an event listener before the page is closed
     window.addEventListener('beforeunload', removeAllCookies);
 
     return () => {
-      // Certifique-se de remover o ouvinte de evento quando o componente for desmontado
+      // Make sure to remove the event listener when the component is unmounted
       window.removeEventListener('beforeunload', removeAllCookies);
     };
   }, [removeCookie]);
 
   return (
-    <>
+    <Provider store={store}> {/* Provide the Redux store to your components */}
       <Routes />
-    </>
+    </Provider>
   )
 }

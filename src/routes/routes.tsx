@@ -12,6 +12,7 @@ import ProductRegister from '../pages/register/product';
 import AddressRegister from '../pages/register/address';
 import EditProduct from '../pages/update/product';
 import EditAddress from '../pages/update/address';
+import CartPage from '../pages/cart';
 
 export default function AppRoutes() {
   return (
@@ -29,6 +30,7 @@ export default function AppRoutes() {
         <Route path="/register/address" element={<AddressRegister />} />
         <Route path="/update/product/:id" element={<EditProduct />} />
         <Route path="/edit/address/:enderecoId" element={<EditAddress />} />
+        <Route path='/cart' element={<CartPage />} />
       </Routes>
       <Footer />
     </Router>

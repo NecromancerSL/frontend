@@ -66,13 +66,13 @@ export default function EditAddress() {
     try {
       const loggedInUserId = Cookies.get('userId');
 
-      const response = await api.post(`/editaddress/${enderecoId}`, {
+      const response = await api.post(`/atualizarendereco/${enderecoId}`, {
         ...address,
         userId: loggedInUserId,
       });
 
       console.log(response);
-      navigate('/'); // Redirecione para a página desejada após a edição do endereço.
+      navigate('/profile/user'); // Redirecione para a página desejada após a edição do endereço.
     } catch (error) {
       console.error('Erro ao editar endereço:', error);
       setError('Erro ao editar endereço. Tente novamente mais tarde.');

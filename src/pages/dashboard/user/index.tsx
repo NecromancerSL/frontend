@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react';
-import api from '../../../services/api';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../../redux/slice/cartReducer';
 import { Product } from '../../../types/product';
-import { Paper, Typography, Grid, Card, CardMedia, CardContent, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import api from '../../../services/api';
+import { Paper, Typography, Grid, Card, CardMedia, CardContent, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
+
 
 export default function UserDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>();
+  const [quantityToAdd, setQuantityToAdd] = useState(1); // Estado para a quantidade a ser adicionada
+
+  // Obtenha acesso à função dispatch do Redux
+  const dispatch = useDispatch();
 
   useEffect(() => {
     api
@@ -19,9 +26,24 @@ export default function UserDashboard() {
       });
   }, []);
 
-  const openProductModal = (product: Product) => {
+  const openCartModal = (product: Product) => {
     setSelectedProduct(product);
+    setQuantityToAdd(1); // Redefinir a quantidade ao abrir o modal
     setOpenModal(true);
+  };
+
+  const handleAddToCart = () => {
+    if (!selectedProduct) {
+      return;
+    }
+    if (quantityToAdd <= 0) {
+      alert('A quantidade deve ser maior que zero.');
+    } else if (quantityToAdd > selectedProduct.qntEstoque) {
+      alert('Quantidade desejada maior que a quantidade em estoque');
+    } else {
+      dispatch(addToCart({ ...selectedProduct, amount: quantityToAdd })); // Use "amount" ao adicionar ao carrinho
+      setOpenModal(false);
+    }
   };
 
   return (
@@ -61,11 +83,11 @@ export default function UserDashboard() {
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => openProductModal(product)}
+                  onClick={() => openCartModal(product)}
                   fullWidth
                   style={{ marginTop: '16px' }}
                 >
-                  Detalhes do Produto
+                  Adicionar ao Carrinho
                 </Button>
               </CardContent>
             </Card>
@@ -75,16 +97,23 @@ export default function UserDashboard() {
 
       {selectedProduct && (
         <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-          <DialogTitle>Detalhes do Produto</DialogTitle>
+          <DialogTitle>Adicionar ao Carrinho</DialogTitle>
           <DialogContent>
             <Typography variant="h6">{selectedProduct.nome}</Typography>
-            <Typography variant="body2">
-              Preço: R$ {selectedProduct.preco.toFixed(2)}
-            </Typography>
+            <TextField
+              type="number"
+              label="Quantidade"
+              value={quantityToAdd}
+              onChange={(e) => setQuantityToAdd(parseInt(e.target.value))}
+              inputProps={{ min: 1, max: selectedProduct.qntEstoque }}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenModal(false)} color="primary">
-              Fechar
+              Cancelar
+            </Button>
+            <Button onClick={handleAddToCart} color="primary">
+              Adicionar ao Carrinho
             </Button>
           </DialogActions>
         </Dialog>

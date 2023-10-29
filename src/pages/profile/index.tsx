@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { Typography, Paper, Box, Divider, Grid, Button, CardContent } from '@mui/material';
-import { User } from '../../types/User';
+import { User } from '../../types/user';
 import { Endereco } from '../../types/endereco';
-import api from '../../services/api';
+import api from '../../services/api'; // Certifique-se de que a função "api.get" está corretamente configurada
+
 import { Link, useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
@@ -16,8 +17,9 @@ export default function UserProfile() {
   const userId = Cookies.get('userId');
   const [error, setError] = useState<string | null>();
 
-  const fetchUserData = useCallback(() => {
+  useEffect(() => {
     if (userId) {
+      // Buscar dados do usuário
       api.get(`/listarusuario/${userId}`)
         .then((response) => {
           if (response.status !== 200) {
@@ -33,6 +35,7 @@ export default function UserProfile() {
           console.error('Erro ao buscar dados do usuário', error);
         });
 
+      // Buscar endereços do usuário
       api.get(`/listarenderecos/${userId}`)
         .then((response) => {
           if (response.status !== 200) {
@@ -50,26 +53,31 @@ export default function UserProfile() {
     }
   }, [userId]);
 
-  useEffect(() => {
-    fetchUserData();
-  }, [fetchUserData]);
-
+  // Função para editar o endereço
   const editarEndereco = (enderecoId: number) => {
     navigate(`/edit/address/${enderecoId}`);
   };
 
   const deletarEndereco = async (enderecoId: number) => {
-    try {
-      await api.delete(`/deletarendereco/${enderecoId}`);
-      // Atualize os dados do usuário após a exclusão
-      fetchUserData();
-    } catch (error) {
-      setError('Erro ao excluir endereço. Por favor, tente novamente mais tarde.');
-      console.error('Erro ao excluir endereço', error);
+    console.log("Tentando excluir o endereço com ID:", enderecoId);
+    if (isNaN(enderecoId)) {
+      console.error("O valor de enderecoId não é um número válido.");
+      return;
+    }
+  
+    const confirmDelete = window.confirm("Tem certeza de que deseja excluir este endereço?");
+  
+    if (confirmDelete) {
+      try {
+        console.log("Tentando excluir o endereço com ID:", enderecoId);
+        await api.delete(`/deletarendereco/${enderecoId}`);
+        console.log("Endereço excluído com sucesso.");
+        window.location.reload();
+      } catch (error) {
+        console.error("Erro ao excluir o endereço:", error);
+      }
     }
   };
-   
-
   return (
     <Box p={2}>
       <Typography variant="h5" gutterBottom>Perfil do Usuário</Typography>
@@ -135,7 +143,6 @@ export default function UserProfile() {
           Criar Endereço
         </Button>
       </Link>
-
     </Box>
   );
 }

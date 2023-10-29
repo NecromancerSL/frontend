@@ -54,7 +54,7 @@ export default function AddressRegister() {
       });
 
       console.log(response);
-      navigate('/'); // Redirecione para a página desejada após a criação do endereço.
+      navigate('/profile/user'); // Redirecione para a página desejada após a criação do endereço.
     } catch (error) {
       console.error('Erro ao registrar endereço:', error);
       setError('Erro ao registrar endereço. Tente novamente mais tarde.');
