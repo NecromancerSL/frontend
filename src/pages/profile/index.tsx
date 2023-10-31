@@ -72,7 +72,6 @@ export default function UserProfile() {
         console.log("Tentando excluir o endereço com ID:", enderecoId);
         await api.delete(`/deletarendereco/${enderecoId}`);
         console.log("Endereço excluído com sucesso.");
-        window.location.reload();
       } catch (error) {
         console.error("Erro ao excluir o endereço:", error);
       }
