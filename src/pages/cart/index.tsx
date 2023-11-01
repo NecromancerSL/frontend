@@ -1,29 +1,59 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store/store';
-import {
-  incrementQuantity,
-  decrementQuantity,
-  removeItem,
-  ProductWithAmount,
-} from '../../redux/slice/cartReducer';
 import api from '../../services/api';
+import CloseIcon from '@mui/icons-material/Close';
+import { Typography, List, ListItem, Card, CardContent, IconButton, ListItemText, CardActions, Button, Modal, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { removeItem, ProductWithAmount, incrementQuantity, decrementQuantity } from '../../redux/slice/cartReducer';
 
-import {
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-  Modal,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-} from '@mui/material';
+const modalStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  backgroundColor: 'white',
+  padding: '20px',
+  borderRadius: '5px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+};
+
+const cardStyle: React.CSSProperties = {
+  width: '100%', // Largura total do card
+  marginBottom: '20px', // Espaço entre os cards
+};
+
+const iconStyle: React.CSSProperties = {
+  color: 'red',
+  cursor: 'pointer',
+  fontSize: 24,
+};
+
+const cartContainerStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '10px',
+};
+
+const cartItemStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  border: '1px solid #e0e0e0',
+  padding: '10px',
+  borderRadius: '5px',
+};
+
+const itemInfoStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '10px',
+};
+
+const totalPriceStyle: React.CSSProperties = {
+  fontWeight: 'bold',
+};
 
 export default function CartPage() {
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
@@ -90,49 +120,57 @@ export default function CartPage() {
       console.error('Erro ao criar o pedido:', error);
     }
   };
-  
+
   return (
-    <div>
+    <div style={cartContainerStyle}>
       <Typography variant="h4" gutterBottom>
-        Shopping Cart
+        Carrinho de Compras
       </Typography>
       <List>
         {cartItems.map((item) => (
           <ListItem key={item.id}>
-            <Card>
-              <CardContent>
-                <ListItemText
-                  primary={`${item.nome} - Quantity: ${item.amount} - Price: R$ ${item.preco.toFixed(2)}`}
-                />
+            <Card style={cardStyle} variant="outlined">
+              <CardContent style={cartItemStyle}>
+                <div style={itemInfoStyle}>
+                  <IconButton
+                    color="error"
+                    aria-label="Remover"
+                    onClick={() => handleRemoveFromCart(item.id)}
+                  >
+                    <CloseIcon style={iconStyle} />
+                  </IconButton>
+                  <ListItemText
+                    primary={`${item.nome}`}
+                  />
+                </div>
+                <div style={itemInfoStyle}>
+                  <IconButton
+                    color="primary"
+                    aria-label="Diminuir"
+                    onClick={() => handleDecrementQuantity(item.id)}
+                  >
+                    -
+                  </IconButton>
+                  <Typography>
+                    Quantidade: {item.amount}
+                  </Typography>
+                  <IconButton
+                    color="primary"
+                    aria-label="Aumentar"
+                    onClick={() => handleIncrementQuantity(item)}
+                  >
+                    +
+                  </IconButton>
+                  <Typography style={totalPriceStyle}>
+                    R$ {(item.preco * item.amount).toFixed(2)}
+                  </Typography>
+                </div>
               </CardContent>
-              <CardActions>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleDecrementQuantity(item.id)}
-                >
-                  -
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleIncrementQuantity(item)}
-                >
-                  +
-                </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => handleRemoveFromCart(item.id)}
-                >
-                  Remove
-                </Button>
-              </CardActions>
             </Card>
           </ListItem>
         ))}
       </List>
-      <Card variant="outlined">
+      <Card style={cardStyle} variant="outlined">
         <CardContent>
           <Typography variant="h5" gutterBottom>
             Resumo do Pedido
@@ -150,40 +188,37 @@ export default function CartPage() {
         </CardActions>
       </Card>
 
-      <Modal
-        open={isModalOpen}
-        onClose={closeModal}
-      >
-        <div className="modal-content">
+      <Modal open={isModalOpen} onClose={closeModal}>
+        <div style={modalStyle}>
           <Typography variant="h5" gutterBottom>
             Escolha a forma de pagamento e entrega
           </Typography>
-          <FormControl component="fieldset">
-            <Typography variant="h6">Forma de pagamento:</Typography>
-            <RadioGroup
-              value={selectedPayment}
-              onChange={(e) => setSelectedPayment(e.target.value)}
-            >
-              <FormControlLabel value="dinheiro" control={<Radio />} label="Dinheiro" />
-              <FormControlLabel value="cartao" control={<Radio />} label="Cartão" />
-              <FormControlLabel value="pix" control={<Radio />} label="PIX" />
-            </RadioGroup>
-          </FormControl>
-          <FormControl component="fieldset">
-            <Typography variant="h6">Forma de entrega:</Typography>
-            <RadioGroup
-              value={selectedDelivery}
-              onChange={(e) => setSelectedDelivery(e.target.value)}
-            >
-              <FormControlLabel value="retirada" control={<Radio />} label="Retirada na loja" />
-              <FormControlLabel value="vendedor" control={<Radio />} label="Combinação com o vendedor" />
-            </RadioGroup>
-          </FormControl>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={finalizarCompra}
-          >
+          <Card style={cardStyle} variant="outlined">
+            <CardContent>
+              <Typography variant="h6">Forma de pagamento</Typography>
+              <RadioGroup
+                value={selectedPayment}
+                onChange={(e) => setSelectedPayment(e.target.value)}
+              >
+                <FormControlLabel value="dinheiro" control={<Radio />} label="Dinheiro" />
+                <FormControlLabel value="cartao" control={<Radio />} label="Cartão" />
+                <FormControlLabel value="pix" control={<Radio />} label="PIX" />
+              </RadioGroup>
+            </CardContent>
+          </Card>
+          <Card style={cardStyle} variant="outlined">
+            <CardContent>
+              <Typography variant="h6">Forma de entrega</Typography>
+              <RadioGroup
+                value={selectedDelivery}
+                onChange={(e) => setSelectedDelivery(e.target.value)}
+              >
+                <FormControlLabel value="retirada" control={<Radio />} label="Retirada na loja" />
+                <FormControlLabel value="vendedor" control={<Radio />} label="Combinação com o vendedor" />
+              </RadioGroup>
+            </CardContent>
+          </Card>
+          <Button variant="contained" color="primary" onClick={finalizarCompra}>
             Finalizar Compra
           </Button>
         </div>

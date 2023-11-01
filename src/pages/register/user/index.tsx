@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Grid, Container, Typography, Box } from '@mui/material';
 import api from '../../../services/api';
@@ -12,6 +12,33 @@ export default function UserRegister() {
   const [telefone, setTelefone] = useState('');
   const navigate = useNavigate();
 
+  // Função para formatar o CPF
+  const formatCPF = (value: string) => {
+    const numericValue = value.replace(/\D/g, '');
+    const formattedCPF = numericValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    return formattedCPF;
+  };
+
+  // Função para formatar o telefone
+  const formatTelefone = (value: string) => {
+    const numericValue = value.replace(/\D/g, '');
+    if (numericValue.length === 11) {
+      return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2, 7)}-${numericValue.slice(7)}`;
+    } else {
+      return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2, 6)}-${numericValue.slice(6)}`;
+    }
+  };
+
+  const handleCpfChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedCPF = formatCPF(event.target.value);
+    setCpf(formattedCPF);
+  };
+
+  const handleTelefoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedTelefone = formatTelefone(event.target.value);
+    setTelefone(formattedTelefone);
+  };
+
   const cadastrarUsuario = async (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
@@ -22,7 +49,13 @@ export default function UserRegister() {
     }
 
     try {
-      const response = await api.post('/cadastrarusuario', { name, email, password, cpf, telefone });
+      const response = await api.post('/cadastrarusuario', {
+        name,
+        email,
+        password,
+        cpf: cpf.replace(/\D/g, ''), // Remove a formatação para o envio
+        telefone: telefone.replace(/\D/g, ''), // Remove a formatação para o envio
+      });
       console.log(response);
       navigate('/login');
     } catch (error) {
@@ -85,7 +118,7 @@ export default function UserRegister() {
                   name="cpf"
                   variant="outlined"
                   value={cpf}
-                  onChange={(event) => setCpf(event.target.value)}
+                  onChange={handleCpfChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -95,7 +128,7 @@ export default function UserRegister() {
                   name="telefone"
                   variant="outlined"
                   value={telefone}
-                  onChange={(event) => setTelefone(event.target.value)}
+                  onChange={handleTelefoneChange}
                 />
               </Grid>
               <Grid item xs={12}>
