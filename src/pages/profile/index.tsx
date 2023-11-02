@@ -1,25 +1,41 @@
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { Typography, Paper, Box, Divider, Grid, Button, CardContent } from '@mui/material';
-import { User } from '../../types/user';
-import { Endereco } from '../../types/endereco';
-import api from '../../services/api'; // Certifique-se de que a função "api.get" está corretamente configurada
-
+import api from '../../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
+import { User } from '../../types/user';
+import { Endereco } from '../../types/endereco';
 
 export default function UserProfile() {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
-  const [enderecos, setEnderecos] = useState<Endereco[]>([]); 
+  const [enderecos, setEnderecos] = useState<Endereco[]>([]);
   const userId = Cookies.get('userId');
   const [error, setError] = useState<string | null>();
 
   useEffect(() => {
     if (userId) {
-      // Buscar dados do usuário
+      // Function to format CPF
+      const formatCPF = (value: string) => {
+        const numericValue = value.replace(/\D/g, '');
+        const formattedCPF = numericValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        return formattedCPF;
+      };
+
+      // Function to format telephone
+      const formatTelefone = (value: string) => {
+        const numericValue = value.replace(/\D/g, '');
+        if (numericValue.length === 11) {
+          return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2, 7)}-${numericValue.slice(7)}`;
+        } else {
+          return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2, 6)}-${numericValue.slice(6)}`;
+        }
+      };
+
+      // Fetch user data
       api.get(`/listarusuario/${userId}`)
         .then((response) => {
           if (response.status !== 200) {
@@ -28,6 +44,9 @@ export default function UserProfile() {
           return response.data;
         })
         .then((data) => {
+          // Apply formatting to CPF and telephone when setting user data
+          data.cpf = formatCPF(data.cpf);
+          data.telefone = formatTelefone(data.telefone);
           setUser(data);
         })
         .catch((error) => {
@@ -35,7 +54,7 @@ export default function UserProfile() {
           console.error('Erro ao buscar dados do usuário', error);
         });
 
-      // Buscar endereços do usuário
+      // Fetch user addresses
       api.get(`/listarenderecos/${userId}`)
         .then((response) => {
           if (response.status !== 200) {
@@ -53,7 +72,7 @@ export default function UserProfile() {
     }
   }, [userId]);
 
-  // Função para editar o endereço
+  // Function to edit the address
   const editarEndereco = (enderecoId: number) => {
     navigate(`/edit/address/${enderecoId}`);
   };
@@ -64,9 +83,9 @@ export default function UserProfile() {
       console.error("O valor de enderecoId não é um número válido.");
       return;
     }
-  
+
     const confirmDelete = window.confirm("Tem certeza de que deseja excluir este endereço?");
-  
+
     if (confirmDelete) {
       try {
         console.log("Tentando excluir o endereço com ID:", enderecoId);
@@ -77,6 +96,7 @@ export default function UserProfile() {
       }
     }
   };
+
   return (
     <Box p={2}>
       <Typography variant="h5" gutterBottom>Perfil do Usuário</Typography>

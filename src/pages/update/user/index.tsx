@@ -1,12 +1,28 @@
-import { useState, useEffect, ChangeEvent } from 'react';
-import Cookies from 'js-cookie';
+import { useState, ChangeEvent, useEffect } from 'react';
 import { Typography, Paper, Button, TextField, Box } from '@mui/material';
-import { User } from '../../../types/user';
 import api from '../../../services/api';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import { User } from '../../../types/user';
+
+// Function to format CPF
+const formatCPF = (value: string) => {
+  const numericValue = value.replace(/\D/g, '');
+  const formattedCPF = numericValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  return formattedCPF;
+};
+
+// Function to format telephone
+const formatTelefone = (value: string) => {
+  const numericValue = value.replace(/\D/g, '');
+  if (numericValue.length === 11) {
+    return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2, 7)}-${numericValue.slice(7)}`;
+  } else {
+    return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2, 6)}-${numericValue.slice(6)}`;
+  }
+};
 
 export default function EditUserProfile() {
-
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>();
   const [editedUser, setEditedUser] = useState<User | null>();
@@ -22,6 +38,10 @@ export default function EditUserProfile() {
           return response.data;
         })
         .then((data) => {
+          // Format CPF and telephone when setting user data
+          data.cpf = formatCPF(data.cpf);
+          data.telefone = formatTelefone(data.telefone);
+
           setUser(data);
           setEditedUser(data);
         })
@@ -34,15 +54,28 @@ export default function EditUserProfile() {
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     if (editedUser) {
+      let formattedValue = value;
+
+      // Apply formatting to CPF and telephone fields
+      if (name === 'cpf') {
+        formattedValue = formatCPF(value);
+      } else if (name === 'telefone') {
+        formattedValue = formatTelefone(value);
+      }
+
       setEditedUser({
         ...editedUser,
-        [name]: value,
+        [name]: formattedValue,
       });
     }
   };
 
   const handleUpdateUser = () => {
     if (userId && editedUser) {
+      // Remove formatting before sending to the server
+      editedUser.cpf = editedUser.cpf.replace(/\D/g, '');
+      editedUser.telefone = editedUser.telefone.replace(/\D/g, '');
+
       api.post(`/atualizarusuario/${userId}`, editedUser)
         .then((response) => {
           if (response.status !== 200) {

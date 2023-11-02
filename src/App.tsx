@@ -3,6 +3,8 @@ import { useCookies } from 'react-cookie';
 import { Provider } from 'react-redux'; // Import Provider
 import { store } from './redux/store/store'; // Import your Redux store
 import Routes from './routes/routes';
+import theme from './theme/theme';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 
 export default function App() {
   
@@ -26,8 +28,11 @@ export default function App() {
   }, [removeCookie]);
 
   return (
-    <Provider store={store}> {/* Provide the Redux store to your components */}
-      <Routes />
+    <Provider store={store}>
+      <ThemeProvider theme={theme}> 
+        <CssBaseline />
+        <Routes />
+      </ThemeProvider>
     </Provider>
   )
 }
