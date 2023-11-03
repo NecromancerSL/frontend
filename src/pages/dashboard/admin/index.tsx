@@ -4,7 +4,26 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../../types/product";
-import { Typography, Grid, Card, CardMedia, CardContent, CardActions, Button } from "@mui/material";
+import {
+  Typography,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Button,
+  Box, // Adicionado Box para espaçamento
+} from "@mui/material";
+
+const cardMediaStyle: React.CSSProperties = {
+  width: 150, // Define a largura máxima da imagem
+  height: 150, // Define a altura máxima da imagem
+  objectFit: "cover", // Evita que a imagem seja distorcida
+  borderRadius: "50%", // Bordas arredondadas para criar um círculo
+  display: "flex",
+  alignItems: "center", // Centralize verticalmente
+  justifyContent: "center", // Centralize horizontalmente
+};
 
 export default function DashboardAdmin() {
   const navigate = useNavigate();
@@ -13,7 +32,7 @@ export default function DashboardAdmin() {
 
   useEffect(() => {
     api
-      .get<Product[]>("http://localhost:8080/listarprodutos")
+      .get<Product[]>("/listarprodutos")
       .then((response) => {
         setProducts(response.data);
       })
@@ -31,7 +50,7 @@ export default function DashboardAdmin() {
 
     if (confirmDelete) {
       try {
-        await api.delete(`http://localhost:8080/deletarproduto/${productId}`);
+        await api.delete(`/deletarproduto/${productId}`);
         console.log("Produto excluído com sucesso.");
 
         setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productId));
@@ -68,6 +87,7 @@ export default function DashboardAdmin() {
                 className="product-image"
                 title={product.nome}
                 src={product.imagem}
+                style={cardMediaStyle}
               />
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -107,7 +127,7 @@ export default function DashboardAdmin() {
           </Grid>
         ))}
       </Grid>
-      <div style={{ marginTop: "16px" }}>
+      <Box mt={3}>
         <Button
           variant="contained"
           color="primary"
@@ -116,7 +136,7 @@ export default function DashboardAdmin() {
         >
           Cadastrar Novo Produto
         </Button>
-      </div>
+      </Box>
     </div>
   );
 }

@@ -5,6 +5,15 @@ import { Product } from '../../../types/product';
 import api from '../../../services/api';
 import { Paper, Typography, Grid, Card, CardMedia, CardContent, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 
+const cardMediaStyle: React.CSSProperties = {
+  width: 150, // Define a largura máxima da imagem
+  height: 150, // Define a altura máxima da imagem
+  objectFit: "cover", // Evita que a imagem seja distorcida
+  borderRadius: "50%", // Bordas arredondadas para criar um círculo
+  display: "flex",
+  alignItems: "center", // Centralize verticalmente
+  justifyContent: "center", // Centralize horizontalmente
+};
 
 export default function UserDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,7 +26,7 @@ export default function UserDashboard() {
 
   useEffect(() => {
     api
-      .get<Product[]>('http://localhost:8080/listarprodutos')
+      .get<Product[]>('/listarprodutos')
       .then((response) => {
         setProducts(response.data);
       })
@@ -63,6 +72,7 @@ export default function UserDashboard() {
                 className="product-image"
                 title={product.nome}
                 src={product.imagem}
+                style={cardMediaStyle}
               />
               <CardContent>
                 <Typography variant="h6" gutterBottom>

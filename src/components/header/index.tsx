@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, InputBase, Paper } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -35,7 +35,6 @@ export default function Header() {
   }
 
   const handleSearch = () => {
-    // Redirecione para a página de resultados de pesquisa com a consulta
     navigate(`/search?q=${searchQuery}`);
   }
 
@@ -44,14 +43,14 @@ export default function Header() {
   }
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{ backgroundColor: '#6a9093' }}>
       <Toolbar>
         <Typography variant="h6" style={{ flex: 1 }}>
           <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             Essencial - Produtos Ortopédicos
           </Link>
         </Typography>
-        <Paper component="form" style={{ display: 'flex', alignItems: 'center' }}>
+        <Paper component="form" style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
           <InputBase
             placeholder="Pesquisar..."
             inputProps={{ 'aria-label': 'search' }}
@@ -62,11 +61,10 @@ export default function Header() {
             <SearchIcon />
           </IconButton>
         </Paper>
-        <br />
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {userName ? (
             <div>
-              <Button onClick={handleOpenMenu} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Button onClick={handleOpenMenu} style={{ textDecoration: 'none', color: 'inherit', fontSize: '18px' }}>
                 Olá, {userName}
               </Button>
               <IconButton>
@@ -76,7 +74,7 @@ export default function Header() {
               </IconButton>
             </div>
           ) : (
-            <Link to="/login" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link to="/login" style={{ textDecoration: 'none', color: 'inherit', fontSize: '18px' }}>
               Login
             </Link>
           )}

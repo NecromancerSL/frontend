@@ -7,7 +7,7 @@ const footerStyle: React.CSSProperties = {
   bottom: 0,
   left: 0,
   width: '100%',
-  backgroundColor: '#262626',
+  backgroundColor: '#3e474c', // Alterado para a cor #3e474c
   padding: '10px 0',
   color: 'white',
 };
