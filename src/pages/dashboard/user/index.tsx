@@ -1,27 +1,34 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../../redux/slice/cartReducer';
 import { Product } from '../../../types/product';
 import api from '../../../services/api';
-import { Paper, Typography, Grid, Card, CardMedia, CardContent, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
+import {
+  Paper,
+  Typography,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  Button,
+  Snackbar,
+} from '@mui/material';
 
 const cardMediaStyle: React.CSSProperties = {
-  width: 150, // Define a largura máxima da imagem
-  height: 150, // Define a altura máxima da imagem
-  objectFit: "cover", // Evita que a imagem seja distorcida
-  borderRadius: "50%", // Bordas arredondadas para criar um círculo
-  display: "flex",
-  alignItems: "center", // Centralize verticalmente
-  justifyContent: "center", // Centralize horizontalmente
+  width: 150,
+  height: 150,
+  objectFit: 'cover',
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 };
 
 export default function UserDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [openModal, setOpenModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>();
-  const [quantityToAdd, setQuantityToAdd] = useState(1); // Estado para a quantidade a ser adicionada
-
-  // Obtenha acesso à função dispatch do Redux
+  const [quantityToAdd, setQuantityToAdd] = useState(1);
+  const [showConfirmation, setShowConfirmation] = useState(false); // Estado para mostrar a mensagem de confirmação
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -35,24 +42,19 @@ export default function UserDashboard() {
       });
   }, []);
 
-  const openCartModal = (product: Product) => {
-    setSelectedProduct(product);
-    setQuantityToAdd(1); // Redefinir a quantidade ao abrir o modal
-    setOpenModal(true);
-  };
-
-  const handleAddToCart = () => {
-    if (!selectedProduct) {
-      return;
-    }
+  const handleAddToCart = (product: Product) => {
     if (quantityToAdd <= 0) {
       alert('A quantidade deve ser maior que zero.');
-    } else if (quantityToAdd > selectedProduct.qntEstoque) {
+      return;
+    } else if (quantityToAdd > product.qntEstoque) {
       alert('Quantidade desejada maior que a quantidade em estoque');
-    } else {
-      dispatch(addToCart({ ...selectedProduct, amount: quantityToAdd })); // Use "amount" ao adicionar ao carrinho
-      setOpenModal(false);
+      return;
     }
+
+    dispatch(addToCart({ ...product, amount: quantityToAdd }));
+    setSelectedProduct(product);
+    setQuantityToAdd(1);
+    setShowConfirmation(true);
   };
 
   return (
@@ -93,7 +95,7 @@ export default function UserDashboard() {
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => openCartModal(product)}
+                  onClick={() => handleAddToCart(product)}
                   fullWidth
                   style={{ marginTop: '16px' }}
                 >
@@ -105,29 +107,16 @@ export default function UserDashboard() {
         ))}
       </Grid>
 
-      {selectedProduct && (
-        <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-          <DialogTitle>Adicionar ao Carrinho</DialogTitle>
-          <DialogContent>
-            <Typography variant="h6">{selectedProduct.nome}</Typography>
-            <TextField
-              type="number"
-              label="Quantidade"
-              value={quantityToAdd}
-              onChange={(e) => setQuantityToAdd(parseInt(e.target.value))}
-              inputProps={{ min: 1, max: selectedProduct.qntEstoque }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenModal(false)} color="primary">
-              Cancelar
-            </Button>
-            <Button onClick={handleAddToCart} color="primary">
-              Adicionar ao Carrinho
-            </Button>
-          </DialogActions>
-        </Dialog>
+      {showConfirmation && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={showConfirmation}
+          autoHideDuration={3000}
+          onClose={() => setShowConfirmation(false)}
+          message={`Produto "${selectedProduct?.nome}" adicionado ao carrinho.`}
+        />
       )}
     </div>
   );
 }
+  

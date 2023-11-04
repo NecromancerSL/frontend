@@ -1,27 +1,24 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, TextField, Grid, Container, Typography, Box } from '@mui/material';
 import Cookies from 'js-cookie';
 import api from '../../../services/api';
 
 export default function EditAddress() {
-  const { enderecoId } = useParams(); // Recebe o ID do endereço a partir das rotas
+  const { enderecoId } = useParams();
   const navigate = useNavigate();
 
   const [error, setError] = useState('');
-  const [address, setAddress] = useState({
-    cep: '',
-    rua: '',
-    numero: '',
-    apelido: '',
-    complemento: '',
-    bairro: '',
-    cidade: '',
-    estado: '',
-  });
+  const [cep, setCep] = useState('');
+  const [rua, setRua] = useState('');
+  const [numero, setNumero] = useState('');
+  const [apelido, setApelido] = useState('');
+  const [complemento, setComplemento] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [estado, setEstado] = useState('');
 
   useEffect(() => {
-    // Verifique se o usuário está logado
     const loggedInUserId = Cookies.get('userId');
     if (!loggedInUserId) {
       console.error('O usuário não está logado. Redirecione-o para fazer o login.');
@@ -29,13 +26,19 @@ export default function EditAddress() {
       return;
     }
 
-    // Carrega os detalhes do endereço atual para edição
     const fetchAddressDetails = async () => {
       try {
         const response = await api.get(`/getendereco/${enderecoId}`);
         const enderecoData = response.data;
 
-        setAddress(enderecoData);
+        setCep(enderecoData.cep);
+        setRua(enderecoData.rua);
+        setNumero(enderecoData.numero);
+        setApelido(enderecoData.apelido);
+        setComplemento(enderecoData.complemento);
+        setBairro(enderecoData.bairro);
+        setCidade(enderecoData.cidade);
+        setEstado(enderecoData.estado);
       } catch (error) {
         console.error('Erro ao buscar os detalhes do endereço:', error);
         setError('Erro ao buscar os detalhes do endereço. Tente novamente mais tarde.');
@@ -45,37 +48,62 @@ export default function EditAddress() {
     fetchAddressDetails();
   }, [navigate, enderecoId]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setAddress({
-      ...address,
-      [name]: value,
-    });
-  };
-
-  const handleEditAddress = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleEditAddress = async (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
 
-    // Valide se os campos obrigatórios foram preenchidos
-    if (!address.cep || !address.rua || !address.numero || !address.bairro || !address.cidade || !address.estado) {
+    if (!cep || !rua || !numero || !bairro || !cidade || !estado) {
       setError('Preencha todos os campos obrigatórios.');
       return;
+    }
+
+    const cepValidation = await verificarCEP(cep);
+
+    if (!cepValidation) {
+      return; // Não prossegue com a edição se o CEP for inválido.
     }
 
     try {
       const loggedInUserId = Cookies.get('userId');
 
       const response = await api.post(`/atualizarendereco/${enderecoId}`, {
-        ...address,
+        cep,
+        rua,
+        numero,
+        apelido,
+        complemento,
+        bairro,
+        cidade,
+        estado,
         userId: loggedInUserId,
       });
 
       console.log(response);
-      navigate('/profile/user'); // Redirecione para a página desejada após a edição do endereço.
+      navigate('/profile/user');
     } catch (error) {
       console.error('Erro ao editar endereço:', error);
       setError('Erro ao editar endereço. Tente novamente mais tarde.');
+    }
+  };
+
+  const verificarCEP = async (cep: string) => {
+    try {
+      const response = await api.get(`https://viacep.com.br/ws/${cep}/json/`);
+      if (response.data.cep) {
+        setRua(response.data.logradouro);
+        setBairro(response.data.bairro);
+        setCidade(response.data.localidade);
+        setEstado(response.data.uf);
+        setError('');
+        return true; // Retorna true se o CEP for válido.
+      } else {
+        setError('CEP inválido. Verifique o CEP digitado.');
+        return false; // Retorna false se o CEP for inválido.
+      }
+    } catch (error) {
+      console.error('Erro ao verificar CEP:', error);
+      setError('Erro ao verificar CEP. Tente novamente mais tarde.');
+      return false; // Retorna false em caso de erro.
     }
   };
 
@@ -95,8 +123,8 @@ export default function EditAddress() {
                   label="CEP"
                   name="cep"
                   variant="outlined"
-                  value={address.cep}
-                  onChange={handleInputChange}
+                  value={cep}
+                  onChange={(event) => setCep(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -105,8 +133,8 @@ export default function EditAddress() {
                   label="Rua"
                   name="rua"
                   variant="outlined"
-                  value={address.rua}
-                  onChange={handleInputChange}
+                  value={rua}
+                  onChange={(event) => setRua(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -115,8 +143,8 @@ export default function EditAddress() {
                   label="Número"
                   name="numero"
                   variant="outlined"
-                  value={address.numero}
-                  onChange={handleInputChange}
+                  value={numero}
+                  onChange={(event) => setNumero(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -125,8 +153,8 @@ export default function EditAddress() {
                   label="Apelido Endereço"
                   name="apelido"
                   variant="outlined"
-                  value={address.apelido}
-                  onChange={handleInputChange}
+                  value={apelido}
+                  onChange={(event) => setApelido(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -135,8 +163,8 @@ export default function EditAddress() {
                   label="Complemento"
                   name="complemento"
                   variant="outlined"
-                  value={address.complemento}
-                  onChange={handleInputChange}
+                  value={complemento}
+                  onChange={(event) => setComplemento(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -145,8 +173,8 @@ export default function EditAddress() {
                   label="Bairro"
                   name="bairro"
                   variant="outlined"
-                  value={address.bairro}
-                  onChange={handleInputChange}
+                  value={bairro}
+                  onChange={(event) => setBairro(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -155,8 +183,8 @@ export default function EditAddress() {
                   label="Cidade"
                   name="cidade"
                   variant="outlined"
-                  value={address.cidade}
-                  onChange={handleInputChange}
+                  value={cidade}
+                  onChange={(event) => setCidade(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -165,8 +193,8 @@ export default function EditAddress() {
                   label="Estado"
                   name="estado"
                   variant="outlined"
-                  value={address.estado}
-                  onChange={handleInputChange}
+                  value={estado}
+                  onChange={(event) => setEstado(event.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>

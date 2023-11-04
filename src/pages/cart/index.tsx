@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import api from '../../services/api';
-import CloseIcon from '@mui/icons-material/Close';
-import { Typography, List, ListItem, Card, CardContent, IconButton, ListItemText, CardActions, Button, Modal, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { removeItem, ProductWithAmount, incrementQuantity, decrementQuantity } from '../../redux/slice/cartReducer';
+import { Typography, List, ListItem, Card, CardContent, ListItemText, IconButton, CardActions, Button, Modal, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 
 const modalStyle: React.CSSProperties = {
   position: 'absolute',
@@ -52,6 +52,8 @@ const itemInfoStyle: React.CSSProperties = {
 };
 
 const totalPriceStyle: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
   fontWeight: 'bold',
 };
 
@@ -110,6 +112,8 @@ export default function CartPage() {
       const response = await api.post('/criarpedido', {
         usuarioId: 1, // Substitua pelo ID do usuário que está fazendo o pedido
         produtos: itensPedido,
+        formaPagamento: pedido.formaPagamento, // Adicione o tipo de pagamento
+        formaEntrega: pedido.formaEntrega, // Adicione o tipo de entrega
       });
 
       console.log('Resposta da API:', response.data);
@@ -120,6 +124,8 @@ export default function CartPage() {
       console.error('Erro ao criar o pedido:', error);
     }
   };
+
+  const totalItems = cartItems.reduce((total, item) => total + item.amount, 0);
 
   return (
     <div style={cartContainerStyle}>
@@ -132,16 +138,7 @@ export default function CartPage() {
             <Card style={cardStyle} variant="outlined">
               <CardContent style={cartItemStyle}>
                 <div style={itemInfoStyle}>
-                  <IconButton
-                    color="error"
-                    aria-label="Remover"
-                    onClick={() => handleRemoveFromCart(item.id)}
-                  >
-                    <CloseIcon style={iconStyle} />
-                  </IconButton>
-                  <ListItemText
-                    primary={`${item.nome}`}
-                  />
+                  <ListItemText primary={`${item.nome}`} />
                 </div>
                 <div style={itemInfoStyle}>
                   <IconButton
@@ -151,9 +148,7 @@ export default function CartPage() {
                   >
                     -
                   </IconButton>
-                  <Typography>
-                    Quantidade: {item.amount}
-                  </Typography>
+                  <Typography>Quantidade: {item.amount}</Typography>
                   <IconButton
                     color="primary"
                     aria-label="Aumentar"
@@ -164,6 +159,13 @@ export default function CartPage() {
                   <Typography style={totalPriceStyle}>
                     R$ {(item.preco * item.amount).toFixed(2)}
                   </Typography>
+                  <IconButton
+                    color="error"
+                    aria-label="Remover"
+                    onClick={() => handleRemoveFromCart(item.id)}
+                  >
+                    <DeleteIcon style={iconStyle} />
+                  </IconButton>
                 </div>
               </CardContent>
             </Card>
@@ -172,17 +174,15 @@ export default function CartPage() {
       </List>
       <Card style={cardStyle} variant="outlined">
         <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Resumo do Pedido
+          <Typography variant="h6">Total: R$ {total.toFixed(2)}</Typography>
+        </CardContent>
+        <CardContent>
+          <Typography variant="h6">
+            Total de Itens: {totalItems}
           </Typography>
-          <Typography variant="body1">Total: R$ {total.toFixed(2)}</Typography>
         </CardContent>
         <CardActions>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={openModal}
-          >
+          <Button variant="contained" color="primary" onClick={openModal}>
             Finalizar Pedido
           </Button>
         </CardActions>
@@ -196,10 +196,7 @@ export default function CartPage() {
           <Card style={cardStyle} variant="outlined">
             <CardContent>
               <Typography variant="h6">Forma de pagamento</Typography>
-              <RadioGroup
-                value={selectedPayment}
-                onChange={(e) => setSelectedPayment(e.target.value)}
-              >
+              <RadioGroup value={selectedPayment} onChange={(e) => setSelectedPayment(e.target.value)}>
                 <FormControlLabel value="dinheiro" control={<Radio />} label="Dinheiro" />
                 <FormControlLabel value="cartao" control={<Radio />} label="Cartão" />
                 <FormControlLabel value="pix" control={<Radio />} label="PIX" />
@@ -209,12 +206,10 @@ export default function CartPage() {
           <Card style={cardStyle} variant="outlined">
             <CardContent>
               <Typography variant="h6">Forma de entrega</Typography>
-              <RadioGroup
-                value={selectedDelivery}
-                onChange={(e) => setSelectedDelivery(e.target.value)}
-              >
+              <RadioGroup value={selectedDelivery} onChange={(e) => setSelectedDelivery(e.target.value)}>
                 <FormControlLabel value="retirada" control={<Radio />} label="Retirada na loja" />
-                <FormControlLabel value="vendedor" control={<Radio />} label="Combinação com o vendedor" />
+                <FormControlLabel value="entrega" control={<Radio />} label="Entrega a domicilio (somente Taquarituba)" />
+                <FormControlLabel value="frete" control={<Radio />} label="Envio por correio (combinar frete com vendedor)" />
               </RadioGroup>
             </CardContent>
           </Card>

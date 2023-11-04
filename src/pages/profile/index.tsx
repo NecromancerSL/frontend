@@ -18,14 +18,12 @@ export default function UserProfile() {
 
   useEffect(() => {
     if (userId) {
-      // Function to format CPF
       const formatCPF = (value: string) => {
         const numericValue = value.replace(/\D/g, '');
         const formattedCPF = numericValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
         return formattedCPF;
       };
 
-      // Function to format telephone
       const formatTelefone = (value: string) => {
         const numericValue = value.replace(/\D/g, '');
         if (numericValue.length === 11) {
@@ -35,7 +33,6 @@ export default function UserProfile() {
         }
       };
 
-      // Fetch user data
       api.get(`/listarusuario/${userId}`)
         .then((response) => {
           if (response.status !== 200) {
@@ -44,7 +41,6 @@ export default function UserProfile() {
           return response.data;
         })
         .then((data) => {
-          // Apply formatting to CPF and telephone when setting user data
           data.cpf = formatCPF(data.cpf);
           data.telefone = formatTelefone(data.telefone);
           setUser(data);
@@ -54,7 +50,6 @@ export default function UserProfile() {
           console.error('Erro ao buscar dados do usuário', error);
         });
 
-      // Fetch user addresses
       api.get(`/listarenderecos/${userId}`)
         .then((response) => {
           if (response.status !== 200) {

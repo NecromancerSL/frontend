@@ -29,7 +29,6 @@ export default function AddressRegister() {
     try {
       const response = await api.get(`https://viacep.com.br/ws/${cep}/json/`);
       if (response.data.cep) {
-        // CEP é válido, você pode preencher os campos de endereço com as informações da resposta
         setRua(response.data.logradouro);
         setBairro(response.data.bairro);
         setCidade(response.data.localidade);
@@ -53,11 +52,10 @@ export default function AddressRegister() {
       return;
     }
 
-    // Verificar o CEP antes de continuar com o cadastro
     await verificarCEP(cep);
 
     if (error) {
-      // Se houver um erro no CEP, não continue com o cadastro
+      console.error('Erro ao verificar CEP:', error);
       return;
     }
 
