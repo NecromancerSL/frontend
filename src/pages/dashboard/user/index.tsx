@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../../redux/slice/cartReducer';
+import { Link } from 'react-router-dom';
 import { Product } from '../../../types/product';
 import api from '../../../services/api';
 import { Paper, Typography, Select, MenuItem, Grid, Card, CardMedia, CardContent, Button, Snackbar } from '@mui/material';
-
 
 const cardMediaStyle: React.CSSProperties = {
   width: 150,
@@ -68,6 +68,7 @@ export default function UserDashboard() {
 
   return (
     <div>
+      <br />
       <Paper square>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h5" component="div" mt={2}>
@@ -138,16 +139,26 @@ export default function UserDashboard() {
                   color="primary"
                   onClick={() => handleAddToCart(product)}
                   fullWidth
-                  style={{ marginTop: '16px' }}
+                  style={{ marginTop: '8px' }}
                 >
                   Adicionar ao Carrinho
                 </Button>
+                <br />
+                <Link to={`/product/${product.id}`}> {/* Correção aqui */}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    style={{ marginTop: '16px' }}
+                  >
+                    Ver Detalhes
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
-
       {showConfirmation && (
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

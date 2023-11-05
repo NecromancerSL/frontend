@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import api from '../../services/api';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { removeItem, ProductWithAmount, incrementQuantity, decrementQuantity } from '../../redux/slice/cartReducer';
 import { Typography, List, ListItem, Card, CardContent, ListItemText, IconButton, CardActions, Button, Modal, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import Cookies from 'js-cookie'; // Importe a biblioteca js-cookie
 
 const modalStyle: React.CSSProperties = {
   position: 'absolute',
@@ -20,8 +21,8 @@ const modalStyle: React.CSSProperties = {
 };
 
 const cardStyle: React.CSSProperties = {
-  width: '100%', // Largura total do card
-  marginBottom: '20px', // Espaço entre os cards
+  width: '100%',
+  marginBottom: '20px',
 };
 
 const iconStyle: React.CSSProperties = {
@@ -95,25 +96,22 @@ export default function CartPage() {
     const pedido = {
       formaPagamento: selectedPayment,
       formaEntrega: selectedDelivery,
-      // Outros dados do pedido, se necessário
+      nomeUsuario: Cookies.get('userName'), // Adicione o nome de usuário ao pedido
     };
-
-    console.log('Dados do pedido:', pedido);
 
     const itensPedido = cartItems.map((item) => ({
       produtoId: item.id,
       qntProduto: item.amount,
     }));
 
-    console.log('Itens do pedido:', itensPedido);
-
     try {
       console.log('Enviando solicitação para criar pedido...');
       const response = await api.post('/criarpedido', {
         usuarioId: 1, // Substitua pelo ID do usuário que está fazendo o pedido
         produtos: itensPedido,
-        formaPagamento: pedido.formaPagamento, // Adicione o tipo de pagamento
-        formaEntrega: pedido.formaEntrega, // Adicione o tipo de entrega
+        formaPagamento: pedido.formaPagamento,
+        formaEntrega: pedido.formaEntrega,
+        nomeUsuario: pedido.nomeUsuario,
       });
 
       console.log('Resposta da API:', response.data);
@@ -126,6 +124,10 @@ export default function CartPage() {
   };
 
   const totalItems = cartItems.reduce((total, item) => total + item.amount, 0);
+
+  useEffect(() => {
+    Cookies.set('nomeUsuario', 'SeuNomeDeUsuarioAqui'); // Defina o nome de usuário no cookie
+  }, []);
 
   return (
     <div style={cartContainerStyle}>
@@ -198,9 +200,9 @@ export default function CartPage() {
             <CardContent>
               <Typography variant="h6">Forma de pagamento</Typography>
               <RadioGroup value={selectedPayment} onChange={(e) => setSelectedPayment(e.target.value)}>
-                <FormControlLabel value="dinheiro" control={<Radio />} label="Dinheiro" />
-                <FormControlLabel value="cartao" control={<Radio />} label="Cartão" />
-                <FormControlLabel value="pix" control={<Radio />} label="PIX" />
+                <FormControlLabel value="Dinheiro" control={<Radio />} label="Dinheiro" />
+                <FormControlLabel value="Cartão" control={<Radio />} label="Cartão" />
+                <FormControlLabel value="Pix" control={<Radio />} label="PIX" />
               </RadioGroup>
             </CardContent>
           </Card>
@@ -208,9 +210,9 @@ export default function CartPage() {
             <CardContent>
               <Typography variant="h6">Forma de entrega</Typography>
               <RadioGroup value={selectedDelivery} onChange={(e) => setSelectedDelivery(e.target.value)}>
-                <FormControlLabel value="retirada" control={<Radio />} label="Retirada na loja" />
-                <FormControlLabel value="entrega" control={<Radio />} label="Entrega a domicilio (somente Taquarituba)" />
-                <FormControlLabel value="frete" control={<Radio />} label="Envio por correio (combinar frete com vendedor)" />
+                <FormControlLabel value="Retirada" control={<Radio />} label="Retirada na loja" />
+                <FormControlLabel value="Entrega" control={<Radio />} label="Entrega a domicílio (somente Taquarituba)" />
+                <FormControlLabel value="Frete" control={<Radio />} label="Envio por correio (combinar frete com vendedor)" />
               </RadioGroup>
             </CardContent>
           </Card>

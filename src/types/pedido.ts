@@ -6,6 +6,7 @@ export interface Pedido {
     produtoId: number;
     qnt: number;
     valorTotal: number;
+    nomeUsuario: string;
     statusPedido: string;
     statusEntrega: string;
     statusPagamento: string;

@@ -33,7 +33,7 @@ export default function DashboardAdmin() {
             </Button>
         </Link>
         <br />
-        <Link to="/login">
+        <Link to="/dashboard/admin/pedidos">
           <Button variant="contained" className="header-button" style={buttonStyle}>
             Ver Pedidos
           </Button>

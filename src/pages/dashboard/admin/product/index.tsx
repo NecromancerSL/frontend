@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../../../../services/api";
 import { Typography, Grid, Card, CardMedia, CardContent, CardActions, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../../../types/product";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Link } from 'react-router-dom';
 
 const cardMediaStyle: React.CSSProperties = {
   width: 150,
@@ -14,6 +15,12 @@ const cardMediaStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+};
+
+const addButtonStyle: React.CSSProperties = {
+  marginTop: "16px",
+  marginLeft: "auto", // Move o botão para o canto direito
+  marginRight: "16px",
 };
 
 export default function DashboardAdminProducts() {
@@ -65,9 +72,16 @@ export default function DashboardAdminProducts() {
 
   return (
     <div>
-      <Typography variant="h5" component="div" style={{ marginTop: "16px" }}>
-        {category ? `Produtos na categoria: ${category}` : "Todos os Produtos"}
-      </Typography>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Typography variant="h5" component="div" style={{ marginTop: "16px", flex: 1 }}>
+          {category ? `Produtos na categoria: ${category}` : "Todos os Produtos"}
+        </Typography>
+        <Link to="/register/product" style={{ textDecoration: "none" }}>
+          <Button variant="contained" color="primary" style={addButtonStyle}>
+            Adicionar Novo Produto
+          </Button>
+        </Link>
+      </div>
       <Grid container spacing={2} style={{ marginTop: "16px" }}>
         {filteredProducts.map((product) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
