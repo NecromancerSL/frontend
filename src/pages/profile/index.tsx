@@ -67,27 +67,36 @@ export default function UserProfile() {
     }
   }, [userId]);
 
-  // Function to edit the address
+  // Função para editar um endereço
   const editarEndereco = (enderecoId: number) => {
     navigate(`/edit/address/${enderecoId}`);
   };
 
+  // Função para deletar um endereço
   const deletarEndereco = async (enderecoId: number) => {
-    console.log("Tentando excluir o endereço com ID:", enderecoId);
-    if (isNaN(enderecoId)) {
-      console.error("O valor de enderecoId não é um número válido.");
-      return;
-    }
-
-    const confirmDelete = window.confirm("Tem certeza de que deseja excluir este endereço?");
+    const confirmDelete = window.confirm('Tem certeza de que deseja excluir este endereço?');
 
     if (confirmDelete) {
       try {
-        console.log("Tentando excluir o endereço com ID:", enderecoId);
         await api.delete(`/deletarendereco/${enderecoId}`);
-        console.log("Endereço excluído com sucesso.");
+        setEnderecos(enderecos.filter((endereco) => endereco.id !== enderecoId));
       } catch (error) {
-        console.error("Erro ao excluir o endereço:", error);
+        console.error('Erro ao excluir o endereço:', error);
+      }
+    }
+  };
+
+  // Função para excluir a conta
+  const excluirConta = async () => {
+    const confirmDelete = window.confirm('Tem certeza de que deseja excluir sua conta? Esta ação é irreversível.');
+
+    if (confirmDelete) {
+      try {
+        await api.delete(`/deletarusuario/${userId}`);
+        Cookies.remove('userId');
+        navigate('/login');
+      } catch (error) {
+        console.error('Erro ao excluir a conta:', error);
       }
     }
   };
@@ -153,10 +162,23 @@ export default function UserProfile() {
         </Button>
       </Link>
       <Link to="/register/address" style={{ textDecoration: 'none' }}>
-        <Button variant="contained" color="primary" style={{ marginTop: '16px' }}>
+        <Button variant="contained" color="primary" style={{ marginTop: '16px', marginRight: '8px' }}>
           Criar Endereço
         </Button>
       </Link>
+      <Link to="/register/address" style={{ textDecoration: 'none' }}>
+        <Button variant="contained" color="primary" style={{ marginTop: '16px', marginRight: '8px' }}>
+          Meus Pedidos
+        </Button>
+      </Link>
+      <Link to="/update/password" style={{ textDecoration: 'none' }}>
+        <Button variant="contained" color="primary" style={{ marginTop: '16px', marginRight: '8px' }}>
+          Alterar Senha
+        </Button>
+      </Link>
+      <Button variant="contained" color="error" style={{ marginTop: '16px' }} onClick={excluirConta}>
+        Excluir Conta
+      </Button>
     </Box>
   );
 }

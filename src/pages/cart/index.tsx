@@ -129,6 +129,7 @@ export default function CartPage() {
 
   return (
     <div style={cartContainerStyle}>
+      <br />
       <Typography variant="h4" gutterBottom>
         Carrinho de Compras
       </Typography>

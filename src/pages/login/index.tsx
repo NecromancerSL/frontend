@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import api from '../../services/api';
-import { Box, Button, Checkbox, Container, FormControlLabel, Grid, TextField, Typography } from '@mui/material';
+
 import { useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { Container, Box, Typography, TextField, FormControlLabel, Checkbox, Button, Grid } from '@mui/material';
 
 export default function Login() {
-
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [error, setError] = useState('');
 
   const handleLogin = async () => {
     try {
@@ -17,26 +18,21 @@ export default function Login() {
         ? await api.post('/loginadmin', { email, password })
         : await api.post('/loginusuario', { email, password });
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { token, id, name } = response.data;
 
-      // Armazene o token nos cookies
       Cookies.set('token', token, { expires: 7 });
       Cookies.set('userName', name, { expires: 7 });
       Cookies.set('userId', id, { expires: 7 });
 
-      console.log('Token:', token);
-      console.log('ID:', id);
-      console.log('Name:', name);
-
-  
       navigate(isAdmin ? '/dashboard/admin' : '/dashboard/user');
     } catch (error) {
       console.error('Erro no login:', error);
       setEmail('');
       setPassword('');
+      setError('Login incorreto ou inexistente. Por favor, tente novamente.');
     }
-  }
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <Box sx={styles.box}>
@@ -44,6 +40,11 @@ export default function Login() {
           Login
         </Typography>
         <Box component="form" noValidate sx={{ mt: 1 }}>
+          {error && (
+            <Typography variant="body1" color="error" sx={{ mb: 2 }}>
+              {error}
+            </Typography>
+          )}
           <TextField
             variant="standard"
             margin="normal"

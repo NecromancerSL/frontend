@@ -12,6 +12,9 @@ import ProductRegister from '../pages/register/product';
 import AddressRegister from '../pages/register/address';
 import EditProduct from '../pages/update/product';
 import EditAddress from '../pages/update/address';
+import EditUserPassword from '../pages/update/password';
+import DashboardAdminProducts from '../pages/dashboard/admin/product';
+import NotFound from '../pages/notfound';
 import CartPage from '../pages/cart';
 
 export default function AppRoutes() {
@@ -30,7 +33,10 @@ export default function AppRoutes() {
         <Route path="/register/address" element={<AddressRegister />} />
         <Route path="/update/product/:id" element={<EditProduct />} />
         <Route path="/edit/address/:enderecoId" element={<EditAddress />} />
+        <Route path="/update/password" element={<EditUserPassword />} />
+        <Route path="/dashboard/admin/products" element={<DashboardAdminProducts />} />
         <Route path='/cart' element={<CartPage />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </Router>
