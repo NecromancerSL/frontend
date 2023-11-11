@@ -9,6 +9,4 @@ export interface Endereco {
     cidade: string;
     estado: string;
     usuarioId: number;
-    createdAt: Date;
-    updatedAt: Date;
 }

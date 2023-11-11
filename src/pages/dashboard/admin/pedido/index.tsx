@@ -3,7 +3,6 @@ import api from '../../../../services/api';
 import { Pedido } from '../../../../types/pedido';
 import { Card, CardContent, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button, Modal, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
-
 const PedidoList = () => {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,11 +38,43 @@ const PedidoList = () => {
     setSelectedPedido(null);
   };
 
-  const handleSaveChanges = () => {
-    // Implemente a lógica para enviar as alterações para a API e atualizar o estado do pedido
-    // Após a conclusão, feche o modal.
-    setOpenModal(false);
+  const handleSaveChanges = async () => {
+    if (!selectedPedido) {
+      console.error('Selected pedido is null');
+      return;
+    }
+  
+    const { id } = selectedPedido;
+
+    const pedidoId = id.toString();
+  
+    try {
+      await api.put(`/editarstatuspedido/${pedidoId}`, {
+        statusPedido: selectedStatusPedido,
+        statusEntrega: selectedStatusEntrega,
+        statusPagamento: selectedStatusPagamento,
+      });
+  
+      // Atualize o estado local para refletir as alterações
+      setPedidos((prevPedidos) =>
+        prevPedidos.map((pedido) =>
+          pedido.id === id
+            ? {
+                ...pedido,
+                statusPedido: selectedStatusPedido,
+                statusEntrega: selectedStatusEntrega,
+                statusPagamento: selectedStatusPagamento,
+              }
+            : pedido
+        )
+      );
+  
+      setOpenModal(false);
+    } catch (error) {
+      console.error('Erro ao salvar alterações:', error);
+    }
   };
+  
 
   if (isLoading) {
     return <div>Carregando...</div>;

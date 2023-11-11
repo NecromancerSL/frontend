@@ -35,12 +35,6 @@ export default function Home() {
                 Ir para Produtos
             </Button>
         </Link>
-        <br />
-        <Link to="/login">
-          <Button variant="contained" className="header-button" style={buttonStyle}>
-            Login
-          </Button>
-        </Link>
       </Container>
     </div>
   );

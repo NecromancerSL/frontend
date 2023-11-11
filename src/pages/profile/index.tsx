@@ -166,7 +166,7 @@ export default function UserProfile() {
           Criar Endereço
         </Button>
       </Link>
-      <Link to="/register/address" style={{ textDecoration: 'none' }}>
+      <Link to="/user/pedidos" style={{ textDecoration: 'none' }}>
         <Button variant="contained" color="primary" style={{ marginTop: '16px', marginRight: '8px' }}>
           Meus Pedidos
         </Button>
