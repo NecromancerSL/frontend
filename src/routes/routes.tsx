@@ -19,6 +19,7 @@ import CartPage from '../pages/cart';
 import ProductDetail from '../pages/details';
 import PedidoList from '../pages/dashboard/admin/pedido';
 import UserOrders from '../pages/profile/pedidos';
+import SearchProduct from '../pages/search';
 
 export default function AppRoutes() {
   return (
@@ -42,6 +43,7 @@ export default function AppRoutes() {
         <Route path='/product/:produtoid' element={<ProductDetail />} />
         <Route path='/dashboard/admin/pedidos' element={<PedidoList />} />
         <Route path='/user/pedidos' element={<UserOrders />} />
+        <Route path='/search/:query' element={<SearchProduct />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

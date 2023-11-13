@@ -5,4 +5,5 @@ export interface Comentario {
     usuarioId: number;
     produtoId: number;
     usuarioNome: string;
+    editado: boolean;
 }

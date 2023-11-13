@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
 import { useCookies } from 'react-cookie';
+import api from '../../services/api';
+import { AxiosResponse } from 'axios';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -34,9 +36,31 @@ export default function Header() {
     navigate('/');
   }
 
-  const handleSearch = () => {
-    navigate(`/search?q=${searchQuery}`);
-  }
+  const handleSearch = async () => {
+    try {
+      const response: AxiosResponse = await api.get(`/pesquisarprodutos/${searchQuery}`);
+      
+      if (response.status === 200) {
+        const data = response.data; // Axios already parses JSON for you
+        // Process the data as needed
+        console.log('Search results:', data);
+        // You can navigate to the search results page or update the state as needed
+      } else {
+        console.error('Error fetching search results:', response.statusText);
+        // Handle other status codes if needed
+        if (response.status === 404) {
+          console.error('Product not found');
+          // Handle 404 Not Found case
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching search results:');
+    }
+
+    navigate(`/search/${searchQuery}`);
+    
+  };
+  
 
   const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
