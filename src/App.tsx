@@ -6,6 +6,7 @@ import Routes from './routes/routes';
 import theme from './theme/theme';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 
+
 export default function App() {
   
   const [, , removeCookie] = useCookies(['userName', 'userId']);

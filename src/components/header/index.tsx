@@ -39,7 +39,7 @@ export default function Header() {
   const handleSearch = async () => {
     try {
       const response: AxiosResponse = await api.get(`/pesquisarprodutos/${searchQuery}`);
-      
+
       if (response.status === 200) {
         const data = response.data; // Axios already parses JSON for you
         // Process the data as needed
@@ -58,9 +58,9 @@ export default function Header() {
     }
 
     navigate(`/search/${searchQuery}`);
-    
+
   };
-  
+
 
   const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -74,18 +74,18 @@ export default function Header() {
             Essencial - Produtos Ortopédicos
           </Link>
         </Typography>
-        <Paper component="form" style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
-          <InputBase
-            placeholder="Pesquisar..."
-            inputProps={{ 'aria-label': 'search' }}
-            value={searchQuery}
-            onChange={handleSearchInputChange}
-          />
-          <IconButton aria-label="search" onClick={handleSearch}>
-            <SearchIcon />
-          </IconButton>
-        </Paper>
         <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Paper component="form" style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+            <InputBase
+              placeholder="Pesquisar..."
+              inputProps={{ 'aria-label': 'search' }}
+              value={searchQuery}
+              onChange={handleSearchInputChange}
+            />
+            <IconButton aria-label="search" onClick={handleSearch}>
+              <SearchIcon />
+            </IconButton>
+          </Paper>
           {userName ? (
             <div>
               <Button onClick={handleOpenMenu} style={{ textDecoration: 'none', color: 'inherit', fontSize: '18px' }}>
@@ -119,3 +119,4 @@ export default function Header() {
     </AppBar>
   );
 }
+
