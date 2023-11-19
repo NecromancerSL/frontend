@@ -1,5 +1,3 @@
-// SearchProduct.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/slice/cartReducer';
@@ -8,7 +6,7 @@ import api from '../../services/api';
 import { Paper, Typography, Select, MenuItem, Grid, Card, CardMedia, CardContent, Button, Snackbar } from '@mui/material';
 import { Product } from '../../types/product';
 
-const cardMediaStyle : React.CSSProperties = {
+const cardMediaStyle: React.CSSProperties = {
   width: 150,
   height: 150,
   objectFit: 'cover',
@@ -33,9 +31,9 @@ export default function SearchProduct() {
 
   useEffect(() => {
     if (query) {
-      // Fetch products based on the search query
-      api.get(`/pesquisarprodutos/${query}`)
+      api.get(`/buscarproduto/${query}`)
         .then((response) => {
+          console.log('Response from API:', response.data); // Adicione esta linha para debug
           setProducts(response.data);
         })
         .catch((error) => {
@@ -43,7 +41,7 @@ export default function SearchProduct() {
         });
     }
   }, [query]);
-
+  
   const handleAddToCart = (product: Product) => {
     if (quantityToAdd <= 0) {
       alert('A quantidade deve ser maior que zero.');

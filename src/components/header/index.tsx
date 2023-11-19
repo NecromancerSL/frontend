@@ -35,31 +35,32 @@ export default function Header() {
     handleCloseMenu();
     navigate('/');
   }
+  
+  // No arquivo onde você faz a chamada para a API
+const handleSearch = async () => {
+  try {
+    const response: AxiosResponse = await api.get(`/buscarproduto/${encodeURIComponent(searchQuery)}`);
 
-  const handleSearch = async () => {
-    try {
-      const response: AxiosResponse = await api.get(`/pesquisarprodutos/${searchQuery}`);
-
-      if (response.status === 200) {
-        const data = response.data; // Axios already parses JSON for you
-        // Process the data as needed
-        console.log('Search results:', data);
-        // You can navigate to the search results page or update the state as needed
-      } else {
-        console.error('Error fetching search results:', response.statusText);
-        // Handle other status codes if needed
-        if (response.status === 404) {
-          console.error('Product not found');
-          // Handle 404 Not Found case
-        }
+    if (response.status === 200) {
+      const data = response.data; // Axios already parses JSON for you
+      // Process the data as needed
+      console.log('Search results:', data);
+      // Atualizar o estado ou navegar para a página de resultados de pesquisa
+    } else {
+      console.error('Error fetching search results:', response.statusText);
+      // Handle other status codes if needed
+      if (response.status === 404) {
+        console.error('Product not found');
+        // Handle 404 Not Found case
       }
-    } catch (error) {
-      console.error('Error fetching search results:');
     }
+  } catch (error) {
+    console.error('Error fetching search results:', error);
+  }
 
-    navigate(`/search/${searchQuery}`);
+  navigate(`/search/${encodeURIComponent(searchQuery)}`);
+};
 
-  };
 
 
   const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

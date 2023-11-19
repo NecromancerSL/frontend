@@ -3,9 +3,30 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import api from '../../services/api';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { removeItem, ProductWithAmount, incrementQuantity, decrementQuantity } from '../../redux/slice/cartReducer';
-import { Typography, List, ListItem, Card, CardContent, ListItemText, IconButton, CardActions, Button, Modal, RadioGroup, FormControlLabel, Radio } from '@mui/material';
-import Cookies from 'js-cookie'; // Importe a biblioteca js-cookie
+import {
+  removeItem,
+  clearCart,
+  ProductWithAmount,
+  incrementQuantity,
+  decrementQuantity,
+} from '../../redux/slice/cartReducer';
+import {
+  Typography,
+  List,
+  ListItem,
+  Card,
+  CardContent,
+  ListItemText,
+  IconButton,
+  CardActions,
+  Button,
+  Modal,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Alert,
+} from '@mui/material';
+import Cookies from 'js-cookie';
 
 const modalStyle: React.CSSProperties = {
   position: 'absolute',
@@ -66,6 +87,7 @@ export default function CartPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState('dinheiro');
   const [selectedDelivery, setSelectedDelivery] = useState('retirada');
+  const [isOrderSuccessAlertOpen, setIsOrderSuccessAlertOpen] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -96,7 +118,7 @@ export default function CartPage() {
     const pedido = {
       formaPagamento: selectedPayment,
       formaEntrega: selectedDelivery,
-      nomeUsuario: Cookies.get('userName'), // Adicione o nome de usuário ao pedido
+      nomeUsuario: Cookies.get('userName'),
     };
 
     const itensPedido = cartItems.map((item) => ({
@@ -107,7 +129,7 @@ export default function CartPage() {
     try {
       console.log('Enviando solicitação para criar pedido...');
       const response = await api.post('/criarpedido', {
-        usuarioId: 1, // Substitua pelo ID do usuário que está fazendo o pedido
+        usuarioId: 1,
         produtos: itensPedido,
         formaPagamento: pedido.formaPagamento,
         formaEntrega: pedido.formaEntrega,
@@ -118,6 +140,9 @@ export default function CartPage() {
       console.log('Pedido criado com sucesso!');
 
       closeModal();
+      setIsOrderSuccessAlertOpen(true);
+
+      dispatch(clearCart());
     } catch (error) {
       console.error('Erro ao criar o pedido:', error);
     }
@@ -126,11 +151,17 @@ export default function CartPage() {
   const totalItems = cartItems.reduce((total, item) => total + item.amount, 0);
 
   useEffect(() => {
-    Cookies.set('nomeUsuario', 'SeuNomeDeUsuarioAqui'); // Defina o nome de usuário no cookie
+    Cookies.set('nomeUsuario', 'SeuNomeDeUsuarioAqui');
   }, []);
 
   return (
     <div style={cartContainerStyle}>
+      {isOrderSuccessAlertOpen && (
+        <Alert severity="success" onClose={() => setIsOrderSuccessAlertOpen(false)}>
+          Pedido realizado com sucesso!
+        </Alert>
+      )}
+
       <br />
       <Typography variant="h4" gutterBottom>
         Carrinho de Compras
@@ -180,9 +211,7 @@ export default function CartPage() {
           <Typography variant="h6">Total: R$ {total.toFixed(2)}</Typography>
         </CardContent>
         <CardContent>
-          <Typography variant="h6">
-            Total de Itens: {totalItems}
-          </Typography>
+          <Typography variant="h6">Total de Itens: {totalItems}</Typography>
         </CardContent>
         <CardActions>
           <Button variant="contained" color="primary" onClick={openModal}>
