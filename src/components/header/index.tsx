@@ -57,8 +57,14 @@ export default function Header() {
   };
 
   const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  }
+    setSearchQuery(
+      event.target.value
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+    );
+  };
 
   return (
     <AppBar position="static" style={{ backgroundColor: '#6a9093' }}>
