@@ -1,0 +1,46 @@
+/* global.css */
+
+/* Adapte o tamanho da fonte para telas menores */
+body {
+    font-size: 16px;
+  }
+  
+  /* Adapte o espaçamento de margem e padding para telas menores */
+  body, h1, h2, h3, h4, h5, h6, p, a {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Adapte a largura máxima para telas menores */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Adapte os estilos do header para telas menores */
+  header {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+  }
+  
+  /* Adapte os estilos do menu de navegação para telas menores */
+  nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+  }
+  
+  /* Adapte os estilos do conteúdo para telas menores */
+  main {
+    padding: 20px;
+  }
+  
+  /* Adapte os estilos do rodapé para telas menores */
+  footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+  }
+  

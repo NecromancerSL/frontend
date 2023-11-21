@@ -35,33 +35,26 @@ export default function Header() {
     handleCloseMenu();
     navigate('/');
   }
-  
-  // No arquivo onde você faz a chamada para a API
-const handleSearch = async () => {
-  try {
-    const response: AxiosResponse = await api.get(`/buscarproduto/${encodeURIComponent(searchQuery)}`);
 
-    if (response.status === 200) {
-      const data = response.data; // Axios already parses JSON for you
-      // Process the data as needed
-      console.log('Search results:', data);
-      // Atualizar o estado ou navegar para a página de resultados de pesquisa
-    } else {
-      console.error('Error fetching search results:', response.statusText);
-      // Handle other status codes if needed
-      if (response.status === 404) {
-        console.error('Product not found');
-        // Handle 404 Not Found case
+  const handleSearch = async () => {
+    try {
+      const response: AxiosResponse = await api.get(`/buscarproduto/${encodeURIComponent(searchQuery)}`);
+
+      if (response.status === 200) {
+        const data = response.data;
+        console.log('Search results:', data);
+      } else {
+        console.error('Error fetching search results:', response.statusText);
+        if (response.status === 404) {
+          console.error('Product not found');
+        }
       }
+    } catch (error) {
+      console.error('Error fetching search results:', error);
     }
-  } catch (error) {
-    console.error('Error fetching search results:', error);
-  }
-
-  navigate(`/search/${encodeURIComponent(searchQuery)}`);
-};
-
-
+    setSearchQuery('');
+    navigate(`/search/${encodeURIComponent(searchQuery)}`);
+  };
 
   const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -76,7 +69,7 @@ const handleSearch = async () => {
           </Link>
         </Typography>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Paper component="form" style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+          <Paper component="form" style={{ display: 'flex', alignItems: 'center', marginRight: '10px', marginLeft: '10px' }}>
             <InputBase
               placeholder="Pesquisar..."
               inputProps={{ 'aria-label': 'search' }}
@@ -120,4 +113,3 @@ const handleSearch = async () => {
     </AppBar>
   );
 }
-

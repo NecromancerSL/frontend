@@ -7,14 +7,14 @@ const footerStyle: React.CSSProperties = {
   bottom: 0,
   left: 0,
   width: '100%',
-  backgroundColor: '#3e474c', // Alterado para a cor #3e474c
+  backgroundColor: '#3e474c',
   padding: '10px 0',
   color: 'white',
-  zIndex: 10, // Defina uma ordem z para garantir que o rodapé seja exibido acima dos outros elementos
+  zIndex: 10, 
 };
 
 const pageContentStyle: React.CSSProperties = {
-  paddingBottom: '60px', // Defina um preenchimento inferior para criar espaço para o rodapé
+  paddingBottom: '60px', 
 };
 
 export default function Footer() {

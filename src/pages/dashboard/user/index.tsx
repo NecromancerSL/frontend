@@ -16,8 +16,8 @@ const cardMediaStyle: React.CSSProperties = {
   justifyContent: 'center',
 };
 
-const brands = ['Mercur', 'Marca 2', 'Marca 3', 'Marca 4', 'Marca 5'];
-const types = ['Botas', 'Tipo 2', 'Tipo 3', 'Tipo 4', 'Tipo 5'];
+const brands = ['Mercur', 'Hidrolight', 'Orthopauher', 'Dilepé', 'Chantal'];
+const types = ['Botas', 'Tipoias', 'Cintas', 'Corretor', 'Meias'];
 
 export default function UserDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -144,7 +144,7 @@ export default function UserDashboard() {
                   Adicionar ao Carrinho
                 </Button>
                 <br />
-                <Link to={`/product/${product.id}`}> {/* Correção aqui */}
+                <Link to={`/product/${product.id}`}>
                   <Button
                     variant="contained"
                     color="primary"

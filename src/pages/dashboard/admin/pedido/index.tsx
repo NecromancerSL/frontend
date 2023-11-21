@@ -3,7 +3,7 @@ import api from '../../../../services/api';
 import { Pedido } from '../../../../types/pedido';
 import { Card, CardContent, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button, Modal, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
-const PedidoList = () => {
+export default function PedidoList() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -172,6 +172,4 @@ const PedidoList = () => {
       </Modal>
     </Card>
   );
-};
-
-export default PedidoList;
+}

@@ -4,7 +4,7 @@ import { Typography, Card, CardContent, Button, Table, TableBody, TableCell, Tab
 import { Pedido } from "../../../types/pedido";
 import Cookies from "js-cookie";
 
-const UserOrders = () => {
+export default function UserOrders() {
   const userId = Cookies.get("userId");
   const [orders, setOrders] = useState<Pedido[]>([]);
 
@@ -95,6 +95,4 @@ const UserOrders = () => {
       </Card>
     </div>
   );
-};
-
-export default UserOrders;
+}

@@ -143,6 +143,7 @@ export default function ProductDetail() {
                 <div className="product-info">
                   <p>Categoria: {product.categoria}</p>
                   <p>Marca: {product.marca}</p>
+                  <p>Descrição: {product.descricao}</p>
                   <p>Preço: R$ {product.preco.toFixed(2)}</p>
                   <p>Quantidade em Estoque: {product.qntEstoque}</p>
                   <Button variant="contained" color="primary" onClick={handleAddToCart}>

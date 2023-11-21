@@ -3,8 +3,9 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/slice/cartReducer';
 import { Link, useParams } from 'react-router-dom';
 import api from '../../services/api';
-import { Paper, Typography, Select, MenuItem, Grid, Card, CardMedia, CardContent, Button, Snackbar } from '@mui/material';
 import { Product } from '../../types/product';
+import { Paper, Typography, Select, MenuItem, Grid, Card, CardMedia, CardContent, Button, Snackbar } from '@mui/material';
+
 
 const cardMediaStyle: React.CSSProperties = {
   width: 150,
@@ -33,7 +34,7 @@ export default function SearchProduct() {
     if (query) {
       api.get(`/buscarproduto/${query}`)
         .then((response) => {
-          console.log('Response from API:', response.data); // Adicione esta linha para debug
+          console.log('Response from API:', response.data);
           setProducts(response.data);
         })
         .catch((error) => {
@@ -41,7 +42,7 @@ export default function SearchProduct() {
         });
     }
   }, [query]);
-  
+
   const handleAddToCart = (product: Product) => {
     if (quantityToAdd <= 0) {
       alert('A quantidade deve ser maior que zero.');
@@ -68,6 +69,8 @@ export default function SearchProduct() {
       return products.filter((product) => product.marca === selectedBrand && product.categoria === selectedType);
     }
   };
+
+  const filteredProducts = filterProducts();
 
   return (
     <div>
@@ -109,59 +112,65 @@ export default function SearchProduct() {
           </div>
         </div>
       </Paper>
-      <Grid container spacing={2} mt={2}>
-        {filterProducts().map((product) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-            <Card>
-              <CardMedia
-                component="img"
-                alt={product.nome}
-                className="product-image"
-                title={product.nome}
-                src={product.imagem}
-                style={cardMediaStyle}
-              />
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {product.nome}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Categoria: {product.categoria}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Marca: {product.marca}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Preço: R$ {product.preco.toFixed(2)}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Quantidade em Estoque: {product.qntEstoque}
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleAddToCart(product)}
-                  fullWidth
-                  style={{ marginTop: '8px' }}
-                >
-                  Adicionar ao Carrinho
-                </Button>
-                <br />
-                <Link to={`/product/${product.id}`}>
+      {filteredProducts.length === 0 ? (
+        <Typography variant="h5" component="div" mt={2}>
+          Nenhum produto encontrado.
+        </Typography>
+      ) : (
+        <Grid container spacing={2} mt={2}>
+          {filteredProducts.map((product) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+              <Card>
+                <CardMedia
+                  component="img"
+                  alt={product.nome}
+                  className="product-image"
+                  title={product.nome}
+                  src={product.imagem}
+                  style={cardMediaStyle}
+                />
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    {product.nome}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Categoria: {product.categoria}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Marca: {product.marca}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Preço: R$ {product.preco.toFixed(2)}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Quantidade em Estoque: {product.qntEstoque}
+                  </Typography>
                   <Button
                     variant="contained"
                     color="primary"
+                    onClick={() => handleAddToCart(product)}
                     fullWidth
-                    style={{ marginTop: '16px' }}
+                    style={{ marginTop: '8px' }}
                   >
-                    Ver Detalhes
+                    Adicionar ao Carrinho
                   </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                  <br />
+                  <Link to={`/product/${product.id}`}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      style={{ marginTop: '16px' }}
+                    >
+                      Ver Detalhes
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
       {showConfirmation && (
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

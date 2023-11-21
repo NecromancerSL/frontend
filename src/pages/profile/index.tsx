@@ -67,12 +67,10 @@ export default function UserProfile() {
     }
   }, [userId]);
 
-  // Função para editar um endereço
   const editarEndereco = (enderecoId: number) => {
     navigate(`/edit/address/${enderecoId}`);
   };
 
-  // Função para deletar um endereço
   const deletarEndereco = async (enderecoId: number) => {
     const confirmDelete = window.confirm('Tem certeza de que deseja excluir este endereço?');
 
@@ -86,7 +84,6 @@ export default function UserProfile() {
     }
   };
 
-  // Função para excluir a conta
   const excluirConta = async () => {
     const confirmDelete = window.confirm('Tem certeza de que deseja excluir sua conta? Esta ação é irreversível.');
 
