@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
-import { User } from '../../types/user';
+import { User } from '../../types/User';
 import { Endereco } from '../../types/endereco';
 
 export default function UserProfile() {

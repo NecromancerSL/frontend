@@ -27,7 +27,7 @@ export default function ProductRegister() {
     try {
       const response = await api.post('/criarproduto', produto);
       console.log('Produto cadastrado com sucesso:', response.data);
-      navigate('/dashboard/admin');
+      navigate('/dashboard/admin/products');
     } catch (error) {
       console.error('Erro ao cadastrar o produto:', error);
     }

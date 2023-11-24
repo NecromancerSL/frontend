@@ -146,6 +146,7 @@ export default function ProductDetail() {
                   <p>Descrição: {product.descricao}</p>
                   <p>Preço: R$ {product.preco.toFixed(2)}</p>
                   <p>Quantidade em Estoque: {product.qntEstoque}</p>
+                  <br />
                   <Button variant="contained" color="primary" onClick={handleAddToCart}>
                     Adicionar ao Carrinho
                   </Button>

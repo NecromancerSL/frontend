@@ -66,6 +66,8 @@ export default function UserDashboard() {
     }
   };
 
+  const filteredProducts = filterProducts();
+
   return (
     <div>
       <br />
@@ -106,59 +108,66 @@ export default function UserDashboard() {
           </div>
         </div>
       </Paper>
-      <Grid container spacing={2} mt={2}>
-        {filterProducts().map((product) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-            <Card>
-              <CardMedia
-                component="img"
-                alt={product.nome}
-                className="product-image"
-                title={product.nome}
-                src={product.imagem}
-                style={cardMediaStyle}
-              />
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {product.nome}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Categoria: {product.categoria}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Marca: {product.marca}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Preço: R$ {product.preco.toFixed(2)}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Quantidade em Estoque: {product.qntEstoque}
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleAddToCart(product)}
-                  fullWidth
-                  style={{ marginTop: '8px' }}
-                >
-                  Adicionar ao Carrinho
-                </Button>
-                <br />
-                <Link to={`/product/${product.id}`}>
+
+      {filteredProducts.length === 0 ? (
+        <Typography variant="h6" component="div" mt={2}>
+          Nenhum produto encontrado.
+        </Typography>
+      ) : (
+        <Grid container spacing={2} mt={2}>
+          {filteredProducts.map((product) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+              <Card>
+                <CardMedia
+                  component="img"
+                  alt={product.nome}
+                  className="product-image"
+                  title={product.nome}
+                  src={product.imagem}
+                  style={cardMediaStyle}
+                />
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    {product.nome}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Categoria: {product.categoria}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Marca: {product.marca}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Preço: R$ {product.preco.toFixed(2)}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Quantidade em Estoque: {product.qntEstoque}
+                  </Typography>
                   <Button
                     variant="contained"
                     color="primary"
+                    onClick={() => handleAddToCart(product)}
                     fullWidth
-                    style={{ marginTop: '16px' }}
+                    style={{ marginTop: '8px' }}
                   >
-                    Ver Detalhes
+                    Adicionar ao Carrinho
                   </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                  <br />
+                  <Link to={`/product/${product.id}`}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      style={{ marginTop: '16px' }}
+                    >
+                      Ver Detalhes
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
       {showConfirmation && (
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

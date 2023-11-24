@@ -4,7 +4,7 @@ import { RootState } from '../../redux/store/store';
 import api from '../../services/api';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ProductWithAmount, clearCart, decrementQuantity, incrementQuantity, removeItem } from '../../redux/slice/cartReducer';
-import { Alert, Button, Card, CardActions, CardContent, IconButton, List, ListItem, ListItemText, Modal, RadioGroup, Typography } from '@mui/material';
+import { Alert, Button, Card, CardActions, CardContent, IconButton, List, ListItem, ListItemText, Modal, Radio, RadioGroup, FormControlLabel, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
 import './cart.css';
 
@@ -94,7 +94,30 @@ export default function CartPage() {
         <Card className="card" variant="outlined">
           <CardContent>
             <Typography variant="h6">Pagamento via Pix</Typography>
-            {/* ... (conteúdo omitido para brevidade) ... */}
+            <Typography>
+              Chave Pix: 12345678900
+            </Typography>
+            <Typography>
+              Nome: João Batista da Silva
+            </Typography>
+            <Typography>
+              CPF: 123.456.789-00
+            </Typography>
+            <Typography>
+              Banco: 001 - Banco do Brasil
+            </Typography>
+            <Typography>
+              Agência: 1234-5
+            </Typography>
+            <Typography>
+              Conta: 123456-7
+            </Typography>
+            <Typography>
+              Tipo: Conta Corrente
+            </Typography>
+            <Typography>
+              Envie o comprovante de pagamento para o WhatsApp: (14) 99999-9999
+            </Typography>
           </CardContent>
         </Card>
       );
@@ -188,7 +211,9 @@ export default function CartPage() {
             <CardContent>
               <Typography variant="h6">Forma de pagamento</Typography>
               <RadioGroup value={selectedPayment} onChange={(e) => setSelectedPayment(e.target.value)}>
-                {/* ... (conteúdo omitido para brevidade) ... */}
+                <FormControlLabel value="dinheiro" control={<Radio />} label="Dinheiro" />
+                <FormControlLabel value="cartao" control={<Radio />} label="Cartão de Crédito" />
+                <FormControlLabel value="Pix" control={<Radio />} label="Pix" />
               </RadioGroup>
             </CardContent>
           </Card>
@@ -197,7 +222,9 @@ export default function CartPage() {
             <CardContent>
               <Typography variant="h6">Forma de entrega</Typography>
               <RadioGroup value={selectedDelivery} onChange={(e) => setSelectedDelivery(e.target.value)}>
-                {/* ... (conteúdo omitido para brevidade) ... */}
+                <FormControlLabel value="retirada" control={<Radio />} label="Retirar na loja" />
+                <FormControlLabel value="entrega" control={<Radio />} label="Entrega (somente para Taquarituba)" />
+                <FormControlLabel value="frete" control={<Radio />} label="Combinar frete com vendedor via Whatsapp: (14) 99999-9999" />
               </RadioGroup>
             </CardContent>
           </Card>

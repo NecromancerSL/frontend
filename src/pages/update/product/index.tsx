@@ -26,44 +26,40 @@ export default function EditProduct() {
 
   const editarProduto = async () => {
     try {
-      // Enviar os dados do produto para o servidor
       const response = await api.post(
         `http://localhost:8080/atualizarproduto/${produto.id}`,
         produto
       );
       console.log("Produto editado com sucesso:", response.data);
-      navigate("/dashboard/admin");
+      navigate("/dashboard/admin/products");
     } catch (error) {
       console.error("Erro ao editar o produto:", error);
     }
   };
 
   useEffect(() => {
-    // Função para buscar os dados do produto com base no ID
     const buscarProdutoPorID = async () => {
       try {
         const response = await api.get(
           `http://localhost:8080/listarproduto/${id}`
         );
         const produtoData = response.data;
-
-        // Atualiza o estado do produto com os dados recebidos da API
         setProduto(produtoData);
       } catch (error) {
         console.error("Erro ao buscar o produto:", error);
       }
     };
-
-    // Chama a função para buscar os dados do produto assim que o componente for montado
     buscarProdutoPorID();
   }, [id]);
 
   return (
     <Container maxWidth="lg">
       <form>
+      <br />
         <Typography variant="h4" component="h1" align="center">
           Editar Produto
         </Typography>
+        <br />
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -144,6 +140,8 @@ export default function EditProduct() {
               onChange={handleChange}
             />
           </Grid>
+          </Grid>
+          <br />
           <Button
             type="button"
             variant="contained"
@@ -154,7 +152,7 @@ export default function EditProduct() {
           >
             Editar Produto
           </Button>
-        </Grid>
+        
       </form>
     </Container>
   );
