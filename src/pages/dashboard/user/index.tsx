@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../../redux/slice/cartReducer';
 import { Link } from 'react-router-dom';
-import { Product } from '../../../types/product';
 import api from '../../../services/api';
-import { Paper, Typography, Select, MenuItem, Grid, Card, CardMedia, CardContent, Button, Snackbar } from '@mui/material';
+import { Product } from '../../../types/product';
+import { Button, Card, CardContent, CardMedia, Grid, MenuItem, Paper, Select, Snackbar, Typography, } from '@mui/material';
 
 const cardMediaStyle: React.CSSProperties = {
   width: 150,
@@ -18,6 +18,14 @@ const cardMediaStyle: React.CSSProperties = {
 
 const brands = ['Mercur', 'Hidrolight', 'Orthopauher', 'Dilepé', 'Chantal'];
 const types = ['Botas', 'Tipoias', 'Cintas', 'Corretor', 'Meias'];
+const priceRanges = [
+  'Todos os Preços',
+  'R$ 0 - R$50.00',
+  'R$ 51.00 - R$100.00',
+  'R$ 101.00 - R$150.00',
+  'R$ 151.00 - R$200.00',
+  'R$ 201.00 +',
+];
 
 export default function UserDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -26,13 +34,16 @@ export default function UserDashboard() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState('Todos os Produtos');
   const [selectedType, setSelectedType] = useState('Tipos de Produtos');
+  const [selectedPriceRange, setSelectedPriceRange] = useState<string>('Todos os Preços');
   const dispatch = useDispatch();
 
   useEffect(() => {
     api
       .get<Product[]>('/listarprodutos')
       .then((response) => {
-        setProducts(response.data);
+        // Sort products alphabetically by name
+        const sortedProducts = response.data.sort((a, b) => a.nome.localeCompare(b.nome));
+        setProducts(sortedProducts);
       })
       .catch((error) => {
         console.error('Erro ao buscar produtos:', error);
@@ -54,16 +65,39 @@ export default function UserDashboard() {
     setShowConfirmation(true);
   };
 
-  const filterProducts = () => {
-    if (selectedBrand === 'Todos os Produtos' && selectedType === 'Tipos de Produtos') {
-      return products;
-    } else if (selectedBrand !== 'Todos os Produtos' && selectedType === 'Tipos de Produtos') {
-      return products.filter((product) => product.marca === selectedBrand);
-    } else if (selectedBrand === 'Todos os Produtos' && selectedType !== 'Tipos de Produtos') {
-      return products.filter((product) => product.categoria === selectedType);
-    } else {
-      return products.filter((product) => product.marca === selectedBrand && product.categoria === selectedType);
+  const checkPriceRange = (price: number): boolean => {
+    switch (selectedPriceRange) {
+      case 'R$ 0 - R$50.00':
+        return price >= 0 && price <= 50;
+      case 'R$ 51.00 - R$100.00':
+        return price > 50 && price <= 100;
+      case 'R$ 101.00 - R$150.00':
+        return price > 100 && price <= 150;
+      case 'R$ 151.00 - R$200.00':
+        return price > 150 && price <= 200;
+      case 'R$ 201.00 +':
+        return price > 200;
+      default:
+        return true;
     }
+  };
+
+  const filterProducts = () => {
+    let filtered = products
+      .filter(
+        (product) =>
+          (selectedBrand === 'Todos os Produtos' || product.marca === selectedBrand) &&
+          (selectedType === 'Tipos de Produtos' || product.categoria === selectedType) &&
+          (selectedPriceRange === 'Todos os Preços' || checkPriceRange(product.preco))
+      )
+      .sort((a, b) => a.nome.localeCompare(b.nome)); // Sort filtered products alphabetically
+
+    if (selectedPriceRange !== 'Todos os Preços') {
+      // If price range is selected, sort by price in ascending order
+      filtered = filtered.sort((a, b) => a.preco - b.preco);
+    }
+
+    return filtered;
   };
 
   const filteredProducts = filterProducts();
@@ -83,10 +117,7 @@ export default function UserDashboard() {
               : 'Todos os Produtos'}
           </Typography>
           <div style={{ display: 'flex' }}>
-            <Select
-              value={selectedBrand}
-              onChange={(event) => setSelectedBrand(event.target.value)}
-            >
+            <Select value={selectedBrand} onChange={(event) => setSelectedBrand(event.target.value)}>
               <MenuItem value="Todos os Produtos">Todos os Produtos</MenuItem>
               {brands.map((brand) => (
                 <MenuItem key={brand} value={brand}>
@@ -94,14 +125,21 @@ export default function UserDashboard() {
                 </MenuItem>
               ))}
             </Select>
-            <Select
-              value={selectedType}
-              onChange={(event) => setSelectedType(event.target.value)}
-            >
+            <Select value={selectedType} onChange={(event) => setSelectedType(event.target.value)}>
               <MenuItem value="Tipos de Produtos">Tipos de Produtos</MenuItem>
               {types.map((type) => (
                 <MenuItem key={type} value={type}>
                   {type}
+                </MenuItem>
+              ))}
+            </Select>
+            <Select
+              value={selectedPriceRange}
+              onChange={(event) => setSelectedPriceRange(event.target.value as string)}
+            >
+              {priceRanges.map((range) => (
+                <MenuItem key={range} value={range}>
+                  {range}
                 </MenuItem>
               ))}
             </Select>
@@ -153,12 +191,7 @@ export default function UserDashboard() {
                   </Button>
                   <br />
                   <Link to={`/product/${product.id}`}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      style={{ marginTop: '16px' }}
-                    >
+                    <Button variant="contained" color="primary" fullWidth style={{ marginTop: '16px' }}>
                       Ver Detalhes
                     </Button>
                   </Link>
